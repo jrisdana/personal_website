@@ -1,0 +1,3 @@
+"0","logx <- log(fentrate.ym.ful$x + 1)"
+"0","fentrate.ym.ful$logx <- logx"
+"0","head(fentrate.ym.ful)"

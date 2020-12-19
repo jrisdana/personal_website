@@ -1,0 +1,7 @@
+"0","library(""nls2"")"
+"0","library(nlme)"
+"0","pop.ss <- nls(x ~ SSlogis(ind, Asym, xmid, scal), data=fentrate.ym.ful)"
+"0","ggplot(fentrate.ym, aes(x = fentrate.ym.ful$ind, y=fentrate.ym.ful$x))+"
+"0","  geom_point() + "
+"0","  geom_line(aes(x = fentrate.ym.ful$ind, y = predict(pop.ss)), color=""blue"") +"
+"0","  labs(x = ""Number of Months"", y = ""Number of Deaths"", title=""Deaths Involving Fentanyl per Month"")"

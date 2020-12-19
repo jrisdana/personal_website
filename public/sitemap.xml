@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://example.com/</loc>
+    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/post/</loc>
+    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/post/2020-08-05-what-s-correlation-why-do-people-use-it/</loc>
+    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/about/</loc>
+    <lastmod>2020-07-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/tags/causal_inference/</loc>
+    <lastmod>2020-07-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/tags/covid/</loc>
+    <lastmod>2020-07-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/tags/diff_in_diff/</loc>
+    <lastmod>2020-07-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/tags/eda/</loc>
+    <lastmod>2020-07-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</loc>
+    <lastmod>2020-07-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/tags/logistic/</loc>
+    <lastmod>2020-06-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/tags/nonparametric/</loc>
+    <lastmod>2020-06-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/tags/opioid/</loc>
+    <lastmod>2020-06-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/post/2020_14_6_opioid_nonparam/</loc>
+    <lastmod>2020-06-14T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/post/first_post/</loc>
+    <lastmod>2020-05-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://example.com/archives/</loc>
+  </url>
+  
+  <url>
+    <loc>https://example.com/resume/</loc>
+  </url>
+  
+  <url>
+    <loc>https://example.com/search/</loc>
+  </url>
+  
+</urlset>

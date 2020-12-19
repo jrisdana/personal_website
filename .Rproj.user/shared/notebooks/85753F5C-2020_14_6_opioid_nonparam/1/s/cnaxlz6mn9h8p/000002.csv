@@ -1,0 +1,3 @@
+"0","np.fent.full.log <- sm.regression(ind, logx, data=fentrate.ym.ful, col=""green"", pch=19, xlab = ""Number of Months"", ylab = ""Log Deaths"", model=""linear"")"
+"1","Test of linear model:  significance =  0 
+"

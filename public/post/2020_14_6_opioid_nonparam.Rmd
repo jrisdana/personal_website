@@ -1,0 +1,412 @@
+---
+title: "Using Nonparametric Methods to Investigate the Opioid Crisis in Connecticut"
+author: "Jason Risdana"
+date: '2020-06-14'
+tags:
+- opioid
+- logistic
+- nonparametric
+math: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, echo = FALSE)
+```
+This is the first in a series of articles dealing with the current Opioid Epidemic. I explore the relationship between Fentanyl and drug-related deaths using kernel density estimation and nonparametric regression, before fitting the regression to a distribution.
+<!--more-->
+In 2018 alone, nearly 70,000 Americans died from drug overdoses. For some perspective, the number of drug overdose deaths was four times higher in 2018 than in [1999](wonder.cdc.gov.){target="_blank"}. Nearly 70% of these deaths can be attributed to opioid abuse. 
+<br><br>
+This isn't America's first opioid epidemic, nor is this the first time opioids have been widely available as medicine. Hypodermic needles provided immediate pain relief to an unprecedented number of [casualties after the Civil War](https://www.battlefields.org/learn/articles/civil-war-casualties){target="_blank"}. By 1911, [one in 400 US citizens were addicted to some form of opium](https://www.nytimes.com/1911/03/12/archives/-){target="_blank"}. Opiate deaths reached [epidemic proportions again in the 1950s](https://pubmed.ncbi.nlm.nih.gov/11064485/){target="_blank"}.
+<br><br>
+The CDC considers the current opioid epidemic, or the third opioid epidemic, a combination of three epidemics distinguished by the types of opioids associated with mortality. 
+
+- 1. **1990s - 2010:** Prescription painkillers
+
+- 2. **2010 - present:** Heroin
+
+- 3. **2013 - present:** Synthetic opioids
+
+**My goal** in this article is to learn more about the crisis and find out *how* the crisis is getting worse. With the lack of real-time data available, we are forced to look at older datasets. These datasets, however, can tell us a lot about the scope and intensity of the epidemic currently. In this article, I will be using data from [Accidental Drug Related Deaths from 2012-2018 in Connecticut](https://data.ct.gov/Health-and-Human-Services/Accidental-Drug-Related-Deaths-2012-2018/rybz-nyjw){target="_blank"}. 
+
+> **Why am I looking at Connecticut?** Before 2012, Opioid overdose deaths hit Connecticut similarly to the rest of the nation. From 2012 to 2016, the opioid death rate in Connecticut quadrupled from 5.7 to 24.5 per 100,000. In 2017, data placed Connecticut among the [top ten states highest in opium-related death rates (30.9 per 100 000)](https://wonder.cdc.gov/mcd-icd10){target="_blank"}. However, a study done by Green et al, looking at state data from 1999 to 2007 showed a greater increasing mortality from [opioid analgesics](https://pubmed.ncbi.nlm.nih.gov/21131140/){target="_blank"}. Given the timing, the severity of the crisis, and the increased mortality from synthetic opioids, I figured that the data from Connecticut would provide insight on the national crisis.
+
+**My motivation:** I recently took a class on nonparametric statistics and wanted to practice/retain these tools so that I could better explore data. Nonparametric methods can be used to help model-fitting and can provide valid findings without assuming parametric data, or data that comes from a known distribution. 
+```{r prelim}
+options(scipen=999) # turns off scientific notation
+library(lubridate)
+library(tidyverse)
+library(ggplot2)
+library(chron)
+theme_set(theme_bw()) #pre-set bw theme
+drugs.raw <- read.csv("~/R/STAT 352/Accidental_Drug_Related_Deaths_2012-2018.csv")
+# head(drugs.raw)
+# parse Date and Time column
+# drugs.raw$DateTime <- drugs.raw$Date
+drugs.raw$Date2 <- mdy_hms(drugs.raw$Date)
+# summary(drugs.raw$Date2)
+# Date
+drugs.raw$Date2 <- ymd(drugs.raw$Date2)
+# Day
+drugs.raw$Day <- day(drugs.raw$Date2)
+# Day of the week
+drugs.raw$Weekday <- wday(drugs.raw$Date2, label = TRUE)
+# Month
+drugs.raw$Month <- month(drugs.raw$Date2, label=TRUE)
+# Year
+drugs.raw$Year <- year(drugs.raw$Date2)
+startdat <- as.Date(c("2012-01-01"))
+drugs.raw$diff_in_days = as.numeric(difftime(drugs.raw$Date2, startdat, units = "days"))
+```
+## Cleaning the Data
+
+The dataset provided contains date and time in one column. Using the [<kbd>**lubridate**</kbd>](https://lubridate.tidyverse.org/){target="_blank"} package, I created separate Year, Month, and Day columns. I also created a "Number of Days" column, which counted the total number of days since the data was recorded. I created this column to act as an index so that I could easily analyze the density of deaths and covariates over time. 
+<br><br>
+The dataset also contained information for the Longitude, Latitude, and Address of Death in one column. I used the **extract** function from the [<kbd>**dplyr**</kbd>](https://cran.r-project.org/web/packages/dplyr/dplyr.pdf){target="_blank"} package to create columns for Longitude and Latitude information. 
+<br><br>
+```{r ex}
+# extract geographic information
+library(tidyverse)
+attach(drugs.raw)
+drugs.raw1 <- 
+  drugs.raw %>% 
+  extract(DeathCityGeo,
+          c("DeathLongitude", "DeathLatitude"), "\\(([^,]+), ([^)]+)\\)")
+drugs.raw2 <- 
+  drugs.raw1 %>% 
+  extract(ResidenceCityGeo,
+          c("ResLongitude", "ResLatitude"), "\\(([^,]+), ([^)]+)\\)")
+drugs.raw3 <- 
+  drugs.raw2 %>% 
+  extract(InjuryCityGeo,
+          c("InjuryLongitude", "InjuryLatitude"), "\\(([^,]+), ([^)]+)\\)")
+# turn drugs found into fastDummies
+library(fastDummies)
+drugs.raw4 <- 
+  dummy_cols(drugs.raw3, select_columns = c("Heroin" ,"Cocaine", "Fentanyl", "FentanylAnalogue",   "Oxycodone","Oxymorphone","Ethanol"     ,"Hydrocodone","Benzodiazepine"     
+,"Methadone","Amphet","Tramad"             ,"Morphine_NotHeroin","Hydromorphone","Other"      ,"OpiateNOS","AnyOpioid"))
+# change values in data that do not align
+library(sf)
+library(rgdal)
+attach(drugs.raw4)
+x_range <- range(diff_in_days, na.rm=TRUE)
+```
+## Investigation
+
+Let's look at the distribution of deaths over time using nonparametric density estimation. 
+<br><br>
+Kernel density estimates rely heavily on the value of the smoothing parameter. Thus, a useful density estimation procedure needs a reliable method of determining the best bandwidth to use for a given set of data. 
+<br><br>
+Instead of choosing the smoothing parameter subjectively, we will look at several automated smoothing parameter selection procedures. 
+<br><br>
+
+- **nrd:** Normal Reference - Scott(1992)
+
+- **nrd0:** Silverman's Rule of Thumb - Silverman(1986)
+
+- **SJ:** Sheather-Jones - 1991
+
+- **ucv:** Unbiased Cross-validation
+
+The **Normal Reference** procedure assumes that the general features of the density follow a Normal distribution. The accuracy of a Kernel Density estimator is measured by the Asymptotic Mean Integral of Squared Errors (AIMSE). The AIMSE of a kernel estimator, when bandwidth $h$ is minimized, depends on an unknown density. Mathematically, the minimized bandwidth quantity is related to density by a real-valued quantity $R_2$. In relating a "reference distribution" to the unknown density, we can replace $R_2$ by its value for the reference distribution.  When the density is assumed to be normal, we need to only estimate $\sigma$ using the standard deviation or IQR. 
+<br><br>
+This approach leads to a value of the smoothing parameter that is easily calculated and works well for smooth distributions such as Normal. For reference, the minimized bandwidth is found by
+<br><br>
+$$h^* = \Big(\frac{1}{2\sqrt{\pi}R_2}\Big)^\frac{1}{5}\frac{1}{n^\frac{1}{5}}$$
+<br><br> 
+where the Gaussian kernel is used and 
+<br><br>
+$$R_2 = \displaystyle\int_{-\infty}^{\infty}p''(y)^2dy \sim 1.059\frac{\sigma}{n^\frac{1}{5}}$$
+<br><br>
+The optimal bandwidth is a function of the integrated squared second derivative. The constant, $1.059$, simply comes from using a Gaussian Kernel and assuming the density follows a Normal distribution. In many cases, however, the constant is too wide for other distributions. The **Rule of Thumb** method reduces the constant used the selection procedure to $0.9$. Silverman chooses this value to avoid losing efficiency on Integrated Mean Squared error at the normal. 
+<br><br>
+Another approach is to use a plug-in method. In a plug-in method, the bias of an estimate $\hat g$ is written as a function of an unknown $g$ and approximated through Taylor series expansions. A preliminary estimate is used to derivate an estimate of the bias (also known as the Integrated mean squared error). The **Sheather-Jones** method follows the plug-in approach, instead choosing a pilot estimate that best estimates the second derivative of the density function, rather than the density function itself. Sheather-Jones seems to work very well on a broad set of cases, as opposed to the Normal Reference procedure. 
+<br><br>
+The methods described so far are based on the approximation to the integrated mean squared error given by the AIMSE. If the AIMSE is not an accurate approximation to the integrated mean squared error, then the smoothing parameter selected by these methods may not work well, even if $R_2$ is accurately estimated using either a reference distribution or a preliminary estimator. The last approach used, **Cross-validation**, is based on the idea of estimating the IMSE directly, without relying on the AIMSE. This is done by minimizing the objective function
+<br><br> 
+$$\int_{-\infty}^{\infty}\hat p(y; h)^2dy - \frac{2}{n}\displaystyle \sum_{i=1}^{n}\hat p_{-i}(Y_i; h)$$
+<br><br>
+where $p_{-i}$ denotes the kernel density estimator based on all data points except $Y_i$.
+<br><br>
+This idea applies to a wide range of methods, including multivariate density estimation and kernel estimation of a regression function. However, it is known to be more likely to result in poor choices. This is possibly because the method requires numerical minimization of an objective function, which can be a challenging computational problem depending on the shape of the objective function. A more complex objective function can cause overfitting.  
+<br><br>
+```{r, fig.align = "center"}
+par(mfrow=c(2,2))
+plot(density(diff_in_days, na.rm = TRUE, bw = "nrd"), main = "Time - Silverman", xlab = "Days since Reporting", xlim=c(0,2500))
+plot(density(diff_in_days, na.rm = TRUE, bw = "nrd0"), main = "Time - Normal Reference", xlab = "Days since Reporting", xlim=c(0,2500))
+plot(density(diff_in_days, na.rm = TRUE, bw = "SJ"), main = "Time - Sheather-Jones", xlab = "Days since Reporting", xlim=c(0,2500))
+plot(density(diff_in_days, na.rm = TRUE, bw = "ucv"), main = "Time - Unbiased Cross-Validation", xlab = "Days since Reporting", xlim=c(0,2500))
+```
+<br><br>
+Regardless of bandwidth selectors, each density estimate indicated a rise in deaths per day from 2012-2018. 
+```{r ucv}
+# More info
+# lm(Heroin_Y~Year, data = drugs.raw4)
+# plot(drugs.raw4$Age ~ drugs.raw4$Year)
+# summary(Age)
+library(usmap)
+library(ggplot2)
+# usmap::plot_usmap("counties",
+                  # include = c("CT"))
+InjuryLatitude <- as.numeric(InjuryLatitude)
+InjuryLongitude <- as.numeric(InjuryLongitude)
+# summary(InjuryLatitude)
+# summary(InjuryLongitude)
+# ```{r ggplotprac, fig.align="center", fig.width=6, fig.height=6}
+library(scales)
+drugs.raw4$ind <- 1:nrow(drugs.raw4)
+# simple graph and ggplot2 histogram
+attach(drugs.raw4)
+# ggplot(drugs.raw4, aes(x = Year)) +
+ # geom_bar(color="blue", fill="lightblue") +
+ # xlab("Year") + ylab("Deaths") + 
+ # ggtitle("Drug-related Deaths, 2012-2018")
+```
+
+Since we know there was a surge in Synthetic opioids and a significant increase in overall deaths, we should look at Fentanyl deaths during this period. 
+<br><br> 
+The following table shows the proportion of drug overdoses that involved Fentanyl and year.
+<br><br>
+```{r fent, fit.align="center"}
+library(kableExtra)
+library(magick)
+options(digits=2)
+fentrate <-
+  aggregate(
+  drugs.raw4$Fentanyl_Y, 
+  by=list(Year = drugs.raw4$Year),
+  FUN=sum
+)
+fentrate2 <- 
+  aggregate(
+  drugs.raw4$Fentanyl_Y, 
+  by=list(Year = drugs.raw4$Year),
+  FUN=length
+)
+fentrate$len <- fentrate2$x
+fentrate <- transform(fentrate, 
+                      prop = x/len)
+attach(fentrate)
+#ggplot example
+fentgraph <- ggplot(fentrate, 
+       aes(x=Year,
+           y=prop)) +
+  geom_point(size=3, colour="#CC0000")
+fentgraph <- 
+  fentgraph + labs(title = "Proportion of Overdose Deaths involving Fentanyl in Connecticut, 2012-2018", xlab = "Year", y = "Proportion of Deaths")
+fentrate <- fentrate[,-c(2,3)]
+colnames(fentrate) <- c("Year", "Proportion of Deaths")
+ftab <- kable(fentrate, format = "html", 
+      caption = "Table 1: Proportion of Deaths related to Fentanyl over Time (Years)") %>%
+    kable_styling(bootstrap_options = "striped", full_width = F, position = "float_left")
+ftab
+``` 
+<br><br><br><br>
+<br><br>
+**43.64%** of deaths over the six-year study were related to Fentanyl deaths. This is an astounding percentage, given that before 2015, three years into the study, Fentanyl was found in less than 30% of deaths. Nearly **74.6%** of those who died in 2018 had Fentanyl in their body.
+<br><br><br><br>
+<br><br>
+If plotted by year, the table would appear to follow logistic growth. We can test this claim by model-checking using nonparametric regression. We can run a nonparametric regression and test whether a linear model fits the data. This can be done by comparing the sum of squared errors. If the linear model fits the data, we expect that $SSE_{linear} = SSE_{nonparametric}$. Another expression of this is
+<br><br>
+$$\displaystyle\sum_{i=1}^{n} e_j^2 = \displaystyle\sum_{i=1}^{n}(Y_i - \hat m(X_i))^2$$
+<br><br>
+where $\hat m(X_i)$ is the local-linear kernel estimator of $m(\cdot)$. Simply put, **the residuals between both models should be the same.** This implies that the square of the linear model's residuals is close to zero. Additionally, we can measure the model's goodness-of-fit by finding the ratio of the linear model's SSE to the nonparametric model's SSE. [<kbd>**sm.regression**</kbd>](https://cran.r-project.org/web/packages/sm/sm.pdf){target="_blank"} features of an argument **model = linear**, which tests the hypothesis that a linear function explains the relationship between the variables. 
+<br><br>
+Unfortunately, there's not much data to back up our claims of nonlinear growth. Let's change the time parameter from Years to Months for more data points. Let's also look at the number of deaths over time. 
+<br><br>
+```{r monthly, fig.show='hold'}
+library(sm)
+options(digits=2)
+par(mfrow=c(1, 2))
+drugs.raw4$ym <- format(as.Date(drugs.raw4$Date2), "%Y-%m")
+fentrate.ym <-
+  aggregate(
+  drugs.raw4$Fentanyl_Y, 
+  by=list(m_y = drugs.raw4$ym),
+  FUN=sum
+)
+fentrate2.ym <- 
+  aggregate(
+  drugs.raw4$Fentanyl_Y, 
+  by=list(m_y = drugs.raw4$ym),
+  FUN=length
+)
+fentrate.ym$len <- fentrate2.ym$x
+fentrate.ym <- transform(fentrate.ym, 
+                      prop = x/len)
+fentrate.ym$ind <- 1:nrow(fentrate.ym) 
+attach(fentrate.ym)
+np.fent <- sm.regression(ind, prop, data=fentrate.ym, col="purple", pch=19, xlab = "Number of Months", ylab = "Proportion of Deaths", model="linear")
+fentrate.ym.ful <-
+  aggregate(
+  drugs.raw4$Fentanyl_Y, 
+  by=list(m_y = drugs.raw4$ym),
+  FUN=sum
+)
+fentrate.ym.ful$ind <- 1:nrow(fentrate.ym.ful) 
+np.fent.full <- sm.regression(ind, x, data=fentrate.ym.ful, col="green", pch=19, xlab = "Number of Months", ylab = "Number of Deaths", model="linear")
+```
+<table>
+<tr><th>Proportion of Deaths</th><th>Number of Deaths(Monthly)</th></tr>
+<tr><td>
+|Degrees-of-Freedom|Error Variance|   
+|:-----------------|:-------------| 
+|7.2               |0.062  (6.2%) | 
+</td><td>
+|Degrees-of-Freedom|Error Variance|
+|:----------------:|:------------:|
+|7.2               |7 (7 deaths)  |
+</td></tr> </table>
+The small p-value suggests that the hypothesis that the linear relationship is appropriate is rejected; that is, the relationship between the proportion of drug-related deaths involving Fentanyl and time is not linear.
+
+## Transforming Nonlinear Data
+
+Let's look at the growth of Fentanyl Deaths by Number of Deaths. We know that the relationship between Time and Fentanyl Deaths is not linear. The nonparametric estimate seems to follow a sigmoidal curve. However, It doesn't seem like we're seeing the deaths hit an asymptote. The number of deaths becomes more disperse during the 60th - 80th months (2017 - 2018). 
+<br><br>
+Fentanyl deaths may follow exponential growth. Let's test whether this is true or not. A multiplicative model, like an exponential one, corresponds to an additive model on the log scale. This means that we can verify that the data is exponentiated if time follows a linear relationship with the logarithm of deaths. 
+<br><br>
+This will also allow us to use linear regression tools to predict the trajectory of Fentanyl deaths. 
+<br><br>
+Let's try plotting Time and Fentanyl Deaths, using the logarithm of Fentanyl Deaths. 
+```{r logrel, echo = TRUE}
+logx <- log(fentrate.ym.ful$x)
+fentrate.ym.ful$logx <- logx
+head(fentrate.ym.ful)
+```
+We've run into some trouble - we can't take the log of zero. Let's just add every entry in the number of deaths column by 1. 
+
+```{r attempt}
+logx <- log(fentrate.ym.ful$x + 1)
+fentrate.ym.ful$logx <- logx
+head(fentrate.ym.ful)
+```
+Great - now, let's see how that turned out. 
+
+```{r plot, echo = TRUE}
+np.fent.full.log <- sm.regression(ind, logx, data=fentrate.ym.ful, col="green", pch=19, xlab = "Number of Months", ylab = "Log Deaths", model="linear")
+```
+We can rule out that Deaths over Time follows exponential growth. A log transformation linearizes exponential data. We don't have a linear relationship between the Log of Deaths and the number of months. In fact, the log-deaths model suggests that the growth in the number of deaths is slowing down. 
+<br><br>
+So what do we do?
+
+## Modeling Logistic Growth
+
+We know that the growth of deaths is partially exponential. A good part of the log deaths model is linear. We also know that the growth rate of deaths slowed down after 2017. 
+<br><br>
+Remember how our nonparametric estimate followed a sigmoidal curve? I do too. A sigmoid function follows the same partial exponential growth and decreasing growth rate we see in our data. A common sigmoid function is the logistic function. <br><br>
+The logistic growth model can be written as
+<br><br>
+$$P = \frac{K}{1 + e^{P_o + rt}}$$
+<br><br>
+where 
+
+- $P$: population size (y)
+
+- $t$: time (x)
+
+- $P_o$: initial population size
+
+- $r$: growth rate
+
+- $K$: final population size. 
+
+In our case, the population size is the number of deaths. 
+<br><br>
+A logistic growth model can be implemented in R using [<kbd>**nls**</kbd>](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/nls){target="_blank"}, a non-linear least squares function. Unlike traditional OLS, non-linear least squares need initial starting parameters. The function iteratively evaluates model parameters and selects parameters that minimize model error. Without initial parameters, the function can't compare the model to other parameters. 
+<br><br>
+Finding good starting values is very important in nonlinear regression. If starting parameter values are outside of the range of potential parameter values, the algorithm will either fail or return something that doesn't make sense.
+<br><br>
+The best way to find correct starting values is to “eyeball” the data, or plot the data and find an approximate asymptote, inflection point and slope. 
+<br><br>
+This step can be bypassed by using self-starting functions with [<kbd>**SSlogis**</kbd>](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/SSlogis.html){target="_blank"}. This function creates an initial estimate of the parameters, which are then plugged into the nonlinear least squares function to find the best-fit logistic equation. 
+<br><br>
+The **SSlogis** function fits a slightly different parameterization of the logistic function
+<br><br>
+$$P = \frac{Asym}{1 + e^{\frac{xmid-t}{scal}}}$$
+<br><br>
+where $Asym = K, xmid = \frac{-P_o}{r}, scal = \frac{-1}{r}$. 
+<br><br>
+However, everything means the same thing. $Asym$ is where the number of deaths plateau, $xmid$ is the x value at the inflection point of the logistic curve and $scal$ is how quickly the number of deaths approaches the asymptote. 
+```{r nec}
+library("nls2")
+library(nlme)
+pop.ss <- nls(x ~ SSlogis(ind, Asym, xmid, scal), data=fentrate.ym.ful)
+ggplot(fentrate.ym, aes(x = fentrate.ym.ful$ind, y=fentrate.ym.ful$x))+
+  geom_point() + 
+  geom_line(aes(x = fentrate.ym.ful$ind, y = predict(pop.ss)), color="blue") +
+  labs(x = "Number of Months", y = "Number of Deaths", title="Deaths Involving Fentanyl per Month")
+# legend(0.4, 0.8, legend=c("Logistic Curve", "NP Regression (Normal Reference)"),
+       # col=c("red", "blue"), lty=1:1, cex=0.8,
+       # title="Line types", text.font=4, bg='lightblue')
+# lines(sm.regression(ind, prop, data=fentrate.ym, col="green"))
+summary(pop.ss)
+#This adds to the already created plot a line
+# once again, first argument is x values, second is y values
+
+# ggplot(drugs.raw4, aes(x = Day)) +
+  # geom_histogram(color="darkblue", fill="lightblue") +
+# labs(title="Histogram of Day Number and Death",x="Day)", y = "Number of Dead")
+
+# ggplot(drugs.raw4, aes(x = Age)) + 
+  # geom_histogram(aes(y=..density..), position="identity", alpha=0.5, color="darkblue", fill="lightblue")+
+# geom_density(alpha=0.6)+
+  # labs(title="Weight histogram plot",x="Weight(kg)", y = "Density")+
+# theme_get()
+# colnames(drugs.raw4)
+# Simple vs ggplot2
+```
+I don't think that's a bad fit. The curve suggests that deaths should level out at around 65-70 per month. 
+<br><br>
+Let's look at the residuals: 
+```{r resid}
+library(nlstools)
+pop.res <- nlsResiduals(pop.ss)
+test.nlsResiduals(pop.res)
+```
+The errors are normally distributed. That's good, but does this model make sense? 
+<br><br>
+Let's try to fit a logistic function on the proportion of deaths over time.
+```{r nmeg}
+library("nls2")
+library(nlme)
+pop.ss2 <- nls(prop ~ SSlogis(ind, Asym, xmid, scal), data=fentrate.ym)
+ggplot(fentrate.ym, aes(x = fentrate.ym$ind, y=fentrate.ym$prop))+
+  geom_point() + 
+  geom_line(aes(x = fentrate.ym$ind, y = predict(pop.ss2)), color="blue") +
+  labs(x = "Number of Months", y = "Proportion of Fentanyl Deaths", title="Deaths Involving Fentanyl per Month")
+# legend(0.4, 0.8, legend=c("Logistic Curve", "NP Regression (Normal Reference)"),
+       # col=c("red", "blue"), lty=1:1, cex=0.8,
+       # title="Line types", text.font=4, bg='lightblue')
+# lines(sm.regression(ind, prop, data=fentrate.ym, col="green"))
+summary(pop.ss2)
+#This adds to the already created plot a line
+# once again, first argument is x values, second is y values
+
+# ggplot(drugs.raw4, aes(x = Day)) +
+  # geom_histogram(color="darkblue", fill="lightblue") +
+# labs(title="Histogram of Day Number and Death",x="Day)", y = "Number of Dead")
+
+# ggplot(drugs.raw4, aes(x = Age)) + 
+  # geom_histogram(aes(y=..density..), position="identity", alpha=0.5, color="darkblue", fill="lightblue")+
+# geom_density(alpha=0.6)+
+  # labs(title="Weight histogram plot",x="Weight(kg)", y = "Density")+
+# theme_get()
+# colnames(drugs.raw4)
+# Simple vs ggplot2
+pop.res2 <- nlsResiduals(pop.ss2)
+test.nlsResiduals(pop.res2)
+```
+This model isn't a bad fit either - the errors are also normally distributed. The model suggests that Fentanyl will account for **around 80-85% of drug-related deaths.** This is a huge percentage - nearly 9 out of 10 drug overdoses involve Fentanyl. 
+<br><br>
+For clarity's sake, let's summarize what we know so far: 
+
+- Drug overdose rates have steadily increased since 2012 - more people are dying from drugs. 
+
+- In 2012, Fentanyl was involved in less than 10% of drug overdoses. In 2018, Fentanyl was involved in more than 80% of drug overdoses. 
+
+- The number of drug-related deaths related to Fentanyl and the proportion of drug-related deaths related to Fentanyl both follow a logistic curve over time. 
+
+So what do those curves mean anyway? The asymptote for the number of deaths could suggest that the population that uses Fentanyl is at its maximum. Given that Fentanyl is attributed to most drug deaths, one could expect that Fentanyl is being used or cut with other drugs. Keep in mind that the heroin epidemic and the synthetic opioid epidemic are happening concurrently. As of now, we can't say much. If anything, we have more questions:
+
+Are Fentanyl deaths correlated with Heroin deaths or other drug deaths? Is it taken by older people, who may have other comorbidities? How often is Fentanyl taken alone? 
+<br><br>
+We didn't do much Exploratory Data Analysis at all, so let's revisit these graphs after we explore the data a bit more. If you have the time, check out my second article where I try to answer some of those questions using barplots, heat maps, and other data visualization techniques. 

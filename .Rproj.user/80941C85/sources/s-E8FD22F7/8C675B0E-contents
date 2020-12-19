@@ -1,0 +1,276 @@
+---
+title: 'What''s Correlation? Why do people use it? '
+author: "Jason Risdana"
+date: '2020-08-05'
+slug: correlation
+categories: []
+tags: []
+math: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Correlation analysis is frequently used in scientific reports, but what is correlation? Why is it misused so often? In this article, I will define correlation, its uses and limitations. I'll look at a couple of misconceptions about Pearson correlation analysis and alternative correlation measures.
+<!--more-->
+Correlation is everywhere in scientific analysis, but what does it mean when variables are "correlated"? What does correlation mean anyway? 
+<br><br>
+[This article](https://www.americanscientist.org/article/what-everyone-should-know-about-statistical-correlation){target="_blank"} addresses common misconceptions about correlation and their consequences in academia and beyond. I've struggled with some of these misconceptions, so I thought it would be best to define correlation and explain how to use it. 
+
+## Defining Correlation
+
+When doing a quick Google search on Correlation, the first definition is: 
+
+<p align="center">
+"a mutual relationship or connection between two or more things"
+</p>
+
+In fact, *most* websites define correlation as a "technique that shows how strongly pairs of variables are related". I think it's safe to define Correlation as **the association between two variables.** However, the most popular correlation measure, the **Pearson Correlation**, has a very different definition. 
+<br><br>
+Pearson correlation is often confused with the general definition of correlation. 
+
+## Pearson Correlation
+
+**Pearson Correlation** measures the strength of a linear relationship between variables/features. The measurement is expressed as the **Pearson Correlation Coefficient**, which ranges in value from -1 to +1. The closer the magnitude is to 1, the stronger the linear relationship. 
+
+### How does it work? 
+
+Let's look at the formula for the population correation coefficient to understand how it's measured:
+$$ corr_{xy} = \frac{Cov(X, Y)}{\sigma_x \sigma_y}$$
+I used the population correlation coefficient instead of the sample correlation coefficient because I wanted to better highlight its relationship with other statistical concepts. Let's define some of the variables and measures in this formula: 
+
+- $X, Y$ are random variables - **or a set of numbers that are outcomes of a random phenomenon.** These variables come from some sort of probability distribution. The Pearson Correlation assumes these variables come from a Normal distribution. That is, $X$ and $Y$ are assumed to have values symmetric about the mean, and more values close to the mean than far from the mean. This creates a Bell curve, with the height of the curve being at the mean.
+
+- $\sigma_x, \sigma_y$ are the standard deviations of $X$ and $Y$. That is, **the measure of how far apart values are relative to its mean**. This is called spread. 
+
+- $Cov(X, Y)$ is the covariance of the two random variables. Covariance is **the measure of how much one variable changes relative to another**. 
+<br><br>
+Let's look at the Covariance formula for more information:
+$$ Cov(X, Y) = E(X - E[X])(Y-E[Y])$$ 
+Covariance measures *the average change between two variables*. A **positive** covariance means that the positive values of $X$ correspond with the positive values of $Y$ on average. Likewise, the negative values of $X$ correspond to the negative values of $Y$ on average. As one variable increases, the other also increases on average. 
+<br><br>
+For intuition, let's look at a graph. The [<kbd>**Ecdat**</kbd>](https://cran.r-project.org/web/packages/Ecdat/Ecdat.pdf){target="_blank"} package provides data sets for econometrics.
+```{r graph, echo=FALSE, message=FALSE, warning=FALSE}
+options(digits=2)
+library(ggplot2)
+library(Ecdat)
+library(kableExtra)
+ggplot(DM, aes(s, f)) +
+  geom_point() + 
+  geom_vline(xintercept = 2.242, col="blue") + 
+  geom_hline(yintercept = 2.239, col="red") + 
+  labs(x = "Ask Price", y ="Bid Price")
+```
+
+The relationship between Bid Price and Ask Price has a positive covariance. $E[X]$ is the blue vertical line and $E[Y]$ is the red horizontal line. When $X$ (Ask price) is less than $E[X]$ (mean of Ask price), or left of the blue line, $Y$ (Bid price) is also less than $E[Y]$ (Mean of bid price). Thus, $X - E[X]$ and $Y-E[Y]$ are both negative when $X$ and $Y$ are less than their means. The product of these differences is positive. $X - E[X]$ and $Y - E[Y]$ are both positive when $X$ and $Y$ are greater than their means. The product of these differences are also positive. Thus, the average of the variable's differences, or the Covariance, is always positive.
+
+A negative covariance means that as one variable increases, the other decreases on average. The product of the average $X$ and $Y$ differences from their means will be negative. A near zero covariance means that the variables do not fluctuate together proportionally or inversely on average. Covariance is only effective when the relationships are proportional or inversely proportional - meaning **we can only detect linear relationships.**
+<br><br>
+While covariance can tell us whether variables have a positive or negative linear relationship, it doesn't give us reliable information on the relationship's strength.
+
+> By **Strength**, we mean how close the two variables follow a straight line. 
+
+Covariance is measured in the units of the selected variables. If we're measuring something in feet, find the covariance, and convert feet to meters, the magnitude (size) of the covariance changes. Since the size of the covariance is affected by the size of the units, the strength of a linear relationship remains unclaer. 
+
+The correlation formula "normalizes" the covariance formula, meaning that it gets rid of the units and scales the measure from [0,1]. This is done by dividing the Covariance by the product of standard deviations, $\sigma_x \sigma_y$, of each variable. To better understand this, let's look at the correlation formula again in terms of expectations:
+$$ Cor(X,Y) = \frac{E(X-E[X])(Y-E[Y])}{\sqrt{(E(X-E[X])^2)\cdot(E(Y-E[Y])^2)}}$$
+This is messy, but it illustrates this: What if $X$ and $Y$ changed at a constant proportion at all data points? That is, 
+<br><br>
+$$X - E[X] = Y - E[Y] $$
+If we were to substitute this in and simplify, we would get
+$$ Cor(X, Y) = \frac{E(X-E[X])^2}{E(X-E[X])^2} = 1 $$
+If $X$ and $Y$ fluctuated perfectly inverse of each other, the correlation coefficient would be $-1$. These are the maximum and minimum of the possible range for a correlation coefficient. If the correlation coefficient nears 0, the linear relationship is weak. When $X$ and $Y$ do not consistently change together, the correlation coefficient will be somewhere between 0.00 and 0.99. **How do we know this?** 
+
+### Cauchy-Schwarz Inequality
+
+The Cauchy-Schwarz Inequality is a very useful inequality that says that, if $X$ and $Y$ are random variables and $E(XY)$ exists, 
+$$E(XY)^2 \leq E(X^2)E(Y^2)$$
+Since $X$ can be any random variable, we can set $X$ to be $X - E[X]$ and $Y$ to be $Y - E[Y]$. According to Cauchy-Schwarz inequality, 
+$$E[(X-E[X]))(Y-E[Y])]^2 \leq E((X-E[X])^2)E((Y-E[Y])^2)$$
+This is equivalent to
+$$ Cov(X,Y)^2 \leq Var(X)Var(Y)$$
+Taking the square root of both sides, we find that 
+$$ |Cov(X,Y)| \leq \sigma(X)\sigma(Y)$$
+$\sigma(\cdot)$ being the Standard deviation, which is the square root of the Variance.
+<br><br>
+This verifies the claim that 
+$$\Big|\frac{Cov(X,Y)}{\sigma(X)\sigma(Y)}\Big| = |Corr(X,Y)| \leq 1$$
+We know that covariance can either be positive or negative, so we know that 
+$$ \rho(X,Y) \in [-1,1] $$
+$\rho$ being shorthand for Pearson Correlation. 
+
+## Why did I talk about this? 
+
+The article *only* talks about misuses of Pearson correlation. 
+<br><br>
+**For example**, one misconception from Dr. Velickovic's article is that *a correlation coefficient of zero implies independence*. While independent random variables are uncorrelated, the converse is not true. 
+<br><br>
+Additionally, Pearson correlation is only valid for detecting linear relationships between variables. Nonlinear relationships, like parabolas, could yield a zero correlation coefficient. While the correlation may be zero, there does exist a relationship between random variables. 
+<br><br>
+**Pearson correlation is rooted in linearity**, and it cannot detect nonlinear relationships. 
+<br><br>
+So what else can we use? If we want to evaluate the relationship between two variables, but can't assume that our data is linear, what can we use? 
+
+### Spearman's Correlation
+
+Spearman's correlation measure cannot detect nonmonotonic relationships, so something like a parabola, where variables move positively and negatively together, would still yield a zero correlation coefficient.
+
+> NOTE: There is a correlation measure that can detect nonlinear relationships and independence - **Distance Correlation**. A Distance correlation of zero implies independence. However, I want to write about Similarity and Distance first before writing about Distance Correlation. I'll link that article here once it's published.  
+
+**However**, Spearman's Correlation can detect nonlinear monotonic relationships - think exponential, logistic curves, etc. It is a **nonparametric** measure of correlation, meaning that it doesn't assume the data comes from a known distribution. To understand the significance of this, let's look at the assumptions made using Pearson's correlation: 
+
+- Both variables are normally distributed (bivariate normally distributed)
+
+- Both variables follow a linear relationship (linearity)
+
+- The spread of data points is the same in both random variables (homoscedasticity)
+
+These are some restrictive assumptions - we can only use continuous data with constant variance. Parametric data is great for powerful results, but real-world data usually violates at least one of these assumptions. 
+
+Let's look at an exponential scatterplot and see how both Pearson and Spearman correlation performs. 
+```{r exp}
+x <- c(1,2,3,4,5,6,7,8,9, 10,
+       11,12,13,14,15,16,17,18)
+y <- exp(x)
+df <- cbind(x,y)
+df <- as.data.frame(df)
+g <- ggplot(df, aes(x,y)) + 
+  geom_point() + 
+  geom_smooth(method="lm", se=FALSE)
+g
+```
+Let's use the Pearson correlation coefficient formula to find the strength of linear relationship. 
+```{r pearson}
+cov(x,y)/(sd(x)*sd(y))
+```
+Pearson correlation indicates a positive linear relationship between our sample data. We know that this isn't true, since we plotted an exponential curve. However, we do know that the variables move in the same direction. 
+<br><br>
+**Spearman's Rank correlation** takes the Pearson correlation of the rank variables. 
+
+> A **Rank variable** is the ordered values of a numeric variable. We order values from largest to smallest. We assign our largest value of Rank 1, second-largest value of Rank 2, and so on.
+
+In our case, our highest rank will be Rank 1 and our lowest rank will be rank 18. So our formula should look like: 
+$$r_s = \frac{Cov(rank_x,rank_y)}{\sigma({rank_x})\sigma({rank_y})}$$
+Let's create a table that ranks our columns and appends them to the dataframe.
+```{r rank}
+order.x <- order(x)
+order.y <- order(y)
+df$rank_x <- order.x
+df$rank_y <- order.y
+df.1 <- head(df)
+colnames(df.1) <- c("X", "Y", "Ranking of Variable X", "Ranking of Variable Y")
+df.1 %>% 
+  kable() %>% 
+  kable_styling()
+```
+Now let's compute Spearman's correlation, or the correlation of the ranked variables.
+```{r rank_2}
+with(df, 
+     cov(rank_x, rank_y)/
+       (sd(rank_x)*sd(rank_y)))
+```
+Spearman correlation indicates a **perfect monotonically increasing relationship.** That is, one variable either increases or stays the same as another variable increases. Spearman correlation also returns values ranging from -1 to 1. A perfect monotonically decreasing relationship is expressed as a Spearman correlation of -1. 
+
+Spearman measures the correlations of ranked-ordered variables. The formula is exactly that of Pearson correlation, except with **ranked variables**. Since we're only looking at the ranked variables, we can now find monotonic correlation of ordinal data (categorical data with a set order). Spearman's Correlation allows us to find association between ordinal and continuous variables, rather than only continuous variables. 
+
+### Kendall's Tau 
+
+Let's recap what we know so far: 
+
+- Pearson Correlation is the covariance of two random variables, scaled by its respective standard deviations. It measures the average linear strength between two variables with respect to their means.
+
+- Spearman Correlation is a special case of the Pearson correlation, where data is ranked from largest to smallest. We apply Pearson correlation to the rank values of the variables rather than the variables itself. This allows us to measure for nonlinear monotonic relationships. 
+
+The Kendall Rank Correlation, or Kendall's tau, is another rank correlation measure that can be used with continuous and ordinal variables. **However**, unlike Spearman's correlation, Kendall's Tau is *not* an extension of Pearson correlation. 
+<br><br>
+Instead of measuring correlation by a scaled covariance of the variables, Kendall's tau finds association based on the **concordance** of pairs. 
+
+#### What does concordance even mean? 
+
+A **Concordant pair** is the number of observations that are below a rank. A **Discordant pair** is the number of observations that are above a rank. 
+
+The closer the coefficient is to 1, the closer the relationship is to perfect **concordance**. That is, if the ordered pairs are similar in ranking, the coefficient will be close to 1. If the pairs are inversely related, then the coefficient will be close to -1. 
+
+Let's look at the formula for tau:
+
+$$\hat \tau = \frac{C - D}{\binom{n}{2}}$$ 
+Where 
+
+- $C$ is the number of **concordant** pairs
+
+- $D$ is the number of **discordant** pairs
+
+and $\binom{n}{2}$ is the number of combinations that can be selected from two observations. This scales the coefficient between -1 and 1. 
+
+> ASIDE: This requires that we know the order of variables. If we can't decide if one rank is larger of smaller, we can't measure concordance and discordance. We can't measure the number of ranks below or above a data point if we don't know how many ranks there are or what a rank means.
+
+This might be unclear. Let's use a dataset with an ordered column and an unordered column to measure concordance. 
+```{r concordance}
+Order <- c(1,2,3,4,5)
+Compared <- c(2,3,5,1,4)
+concordant <- function(x){
+  length(Order) - x
+}
+discordant <- function(x,y) {
+  abs(x - y)
+}
+Concordance <- concordant(Compared)
+Discordance <- discordant(Order, Compared)
+df.tau <- as.data.frame(
+  cbind(Order, Compared, Concordance, Discordance)
+)
+df.tau %>% 
+  kable() %>%
+  kable_styling(position="center")
+```
+Kendall's tau compares the number of pairs that agree (sets with more low rankings) and disagree (sets with more high rankings) and finds its ratio to the maximum number of pairs that can differ between two sets. 
+
+Instead of using a variable's mean, Kendall's tau uses the difference in ranking positions in each observation. Let's look at our tau coefficient. 
+$$ \tau = \frac{2}{10} = .2$$
+This is quite a departure from Pearson and Spearman correlation. 
+
+Additionally, Pearson and Spearman correlations measure the strength of a relationship by how much of the variance is explained by both variables. 
+
+Since $\tau$ is based on the number of different pairs between two ordered sets, **we can interpret Kendall's tau as differences between the probability of concordance and the probability of discordance.** If this doesn't make sense, think of tau as the ratio of frequency of similar rankings to all possible pairs of rankings. 
+
+This is interesting! Different types of correlation can detect different relationships, use different statistical tools, and are **still** considered a measure of correlation.
+
+### Multiple interpretations of Correlation
+
+> NOTE: A faster way to find Spearman and Kendall Tau correlation is to use the **cor** function in R and set "method=spearman" or "method=kendall". I didn't go into this, but the Kendall tau formula is different when there are tied ranks. I'll talk about the differences between Kendall tau correlations soon.  
+
+The difference between Spearman's Correlation and Kendall Tau is an important reminder: **correlation is simply defined as an associated between variables**. Correlation can use different concepts of center and still find "an association between two variables and its direction". Another important point is that **correlation is broad and many correlation techniques exist.** While Pearson and Spearman correlation assumes a specific underlying relationship between variables (linear and monotonic), Kendall's tau assumes nothing of the shape of the relationship. Even though these correlations differ in approach, they still quantify the relationship and its direction.  I'll revisit Kendall's tau in a separate article regarding Similarity and Distance.
+
+Even though each of these techniques are a measure of correlation, each correlation defines "correlated" variables differently!
+
+### Significance
+
+My point is that: 
+
+- The type of correlation used, and the validity of its use (whether underlying assumptions are violated), will determine the type of conclusions made. 
+
+- There are many different types of correlation, and there are even more ways to measure similarity between variables. 
+
+- Different correlations can show different aspects of your data, and the types of variables in your data will determine which correlations to use. 
+
+Unfortunately, this was another long article - I promise I will be more concise in the future. 
+
+One last thing! Just reiterating a point Dr. Velikovic made in their article. Correlation can only provide information on the tested variables. Variables at the individual level cannot speak for variables at the aggregate level. 
+
+#### References
+***
+
+- Hervé Abdi - The Kendall Rank Correlation Coefficient
+
+- G.E.Noether - Why Kendall Tau?
+
+- Jerrold H. Zar - Spearman Rank Correlation
+
+- [Josh Starmer - Statquest](https://www.youtube.com/watch?v=qtaqvPAeEJY){target="_blank"}
+ 
+- Stack Exchange
+
+- The BMJ. 11. Correlation and regression
+
+
+

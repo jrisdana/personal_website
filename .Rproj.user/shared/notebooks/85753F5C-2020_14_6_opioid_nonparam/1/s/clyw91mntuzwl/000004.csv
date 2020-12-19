@@ -1,0 +1,10 @@
+"0","fentrate.ym.ful <-"
+"0","  aggregate("
+"0","  drugs.raw4$Fentanyl_Y, "
+"0","  by=list(m_y = drugs.raw4$ym),"
+"0","  FUN=sum"
+"0",")"
+"0","fentrate.ym.ful$ind <- 1:nrow(fentrate.ym.ful) "
+"0","np.fent.full <- sm.regression(ind, x, data=fentrate.ym.ful, col=""green"", pch=19, xlab = ""Number of Months"", ylab = ""Number of Deaths"", model=""linear"")"
+"1","Test of linear model:  significance =  0 
+"

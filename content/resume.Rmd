@@ -1,0 +1,49 @@
+---
+title: "Resume"
+author: "Jason Risdana"
+date: null
+output: 
+  blogdown::html_page:
+    date: null
+tag: 
+  resume
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+**For my resume in PDF format and additional information**, [click here](/Resume_Current.pdf).
+
+## Summary
+
+I'm a highly motivated person interested in Statistics and its applications to social welfare and technology. I spend the majority of my time working on independent data science and statistics projects. I'm methodical and care about my work to the most minute detail. I'm motivated by both a passion for learning and an understanding that better technology can make our world a more equal and just place.
+
+## Education
+
+**Northwestern University**\
+*Bachelor of Arts - June 2020*
+
+**Majors:** *Statistics, Economics*\
+
+- **Relevant Coursework:** Probability Theory • Econometrics • Survey Sampling • Causal Inference • Nonparametric Statistics • Computational Statistics • Risk and Uncertainty • Experimental Economics • Time Series Analysis in Finance 
+
+- **Awards:** Dean’s List (three quarters)
+
+- **MOOCS:** Machine Learning (pending) 
+
+- **Memberships:** American Statistical Association, OC R Users Group, Radical Statistics Group
+
+## Experience
+
+**Ipsos S.A.**\
+*Market Strategy and Understanding Intern*\
+
+* Formatted data tables and graphs for client reports and documents 
+
+* Performed statistical significance tests on product tests to benchmark product's preference with past products
+ 
+## Skills
+
+**Languages:** R (tidyverse), Python (sklearn, seaborn), SQL, Lua, Stata, Matlab, HTML
+
+**Currently Learning:** Scala, C#, C++

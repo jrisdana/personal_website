@@ -1,0 +1,2 @@
+"0","comp_covid_adj$period_int <- as.numeric(comp_covid_adj$period)"
+"0","covid_rn <- filter(comp_covid_adj, period_int < 9)"

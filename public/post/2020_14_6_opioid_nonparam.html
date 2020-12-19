@@ -1,0 +1,374 @@
+---
+title: "Using Nonparametric Methods to Investigate the Opioid Crisis in Connecticut"
+author: "Jason Risdana"
+date: '2020-06-14'
+tags:
+- opioid
+- logistic
+- nonparametric
+math: yes
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+
+
+<p>This is the first in a series of articles dealing with the current Opioid Epidemic. I explore the relationship between Fentanyl and drug-related deaths using kernel density estimation and nonparametric regression, before fitting the regression to a distribution.
+<!--more-->
+In 2018 alone, nearly 70,000 Americans died from drug overdoses. For some perspective, the number of drug overdose deaths was four times higher in 2018 than in <a href="wonder.cdc.gov." target="_blank">1999</a>. Nearly 70% of these deaths can be attributed to opioid abuse.
+<br><br>
+This isn’t America’s first opioid epidemic, nor is this the first time opioids have been widely available as medicine. Hypodermic needles provided immediate pain relief to an unprecedented number of <a href="https://www.battlefields.org/learn/articles/civil-war-casualties" target="_blank">casualties after the Civil War</a>. By 1911, <a href="https://www.nytimes.com/1911/03/12/archives/-" target="_blank">one in 400 US citizens were addicted to some form of opium</a>. Opiate deaths reached <a href="https://pubmed.ncbi.nlm.nih.gov/11064485/" target="_blank">epidemic proportions again in the 1950s</a>.
+<br><br>
+The CDC considers the current opioid epidemic, or the third opioid epidemic, a combination of three epidemics distinguished by the types of opioids associated with mortality.</p>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li><strong>1990s - 2010:</strong> Prescription painkillers</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li><strong>2010 - present:</strong> Heroin</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li><strong>2013 - present:</strong> Synthetic opioids</li>
+</ol></li>
+</ul>
+<p><strong>My goal</strong> in this article is to learn more about the crisis and find out <em>how</em> the crisis is getting worse. With the lack of real-time data available, we are forced to look at older datasets. These datasets, however, can tell us a lot about the scope and intensity of the epidemic currently. In this article, I will be using data from <a href="https://data.ct.gov/Health-and-Human-Services/Accidental-Drug-Related-Deaths-2012-2018/rybz-nyjw" target="_blank">Accidental Drug Related Deaths from 2012-2018 in Connecticut</a>.</p>
+<blockquote>
+<p><strong>Why am I looking at Connecticut?</strong> Before 2012, Opioid overdose deaths hit Connecticut similarly to the rest of the nation. From 2012 to 2016, the opioid death rate in Connecticut quadrupled from 5.7 to 24.5 per 100,000. In 2017, data placed Connecticut among the <a href="https://wonder.cdc.gov/mcd-icd10" target="_blank">top ten states highest in opium-related death rates (30.9 per 100 000)</a>. However, a study done by Green et al, looking at state data from 1999 to 2007 showed a greater increasing mortality from <a href="https://pubmed.ncbi.nlm.nih.gov/21131140/" target="_blank">opioid analgesics</a>. Given the timing, the severity of the crisis, and the increased mortality from synthetic opioids, I figured that the data from Connecticut would provide insight on the national crisis.</p>
+</blockquote>
+<p><strong>My motivation:</strong> I recently took a class on nonparametric statistics and wanted to practice/retain these tools so that I could better explore data. Nonparametric methods can be used to help model-fitting and can provide valid findings without assuming parametric data, or data that comes from a known distribution.</p>
+<div id="cleaning-the-data" class="section level2">
+<h2>Cleaning the Data</h2>
+<p>The dataset provided contains date and time in one column. Using the <a href="https://lubridate.tidyverse.org/" target="_blank"><kbd><strong>lubridate</strong></kbd></a> package, I created separate Year, Month, and Day columns. I also created a “Number of Days” column, which counted the total number of days since the data was recorded. I created this column to act as an index so that I could easily analyze the density of deaths and covariates over time.
+<br><br>
+The dataset also contained information for the Longitude, Latitude, and Address of Death in one column. I used the <strong>extract</strong> function from the <a href="https://cran.r-project.org/web/packages/dplyr/dplyr.pdf" target="_blank"><kbd><strong>dplyr</strong></kbd></a> package to create columns for Longitude and Latitude information.
+<br><br></p>
+</div>
+<div id="investigation" class="section level2">
+<h2>Investigation</h2>
+<p>Let’s look at the distribution of deaths over time using nonparametric density estimation.
+<br><br>
+Kernel density estimates rely heavily on the value of the smoothing parameter. Thus, a useful density estimation procedure needs a reliable method of determining the best bandwidth to use for a given set of data.
+<br><br>
+Instead of choosing the smoothing parameter subjectively, we will look at several automated smoothing parameter selection procedures.
+<br><br></p>
+<ul>
+<li><p><strong>nrd:</strong> Normal Reference - Scott(1992)</p></li>
+<li><p><strong>nrd0:</strong> Silverman’s Rule of Thumb - Silverman(1986)</p></li>
+<li><p><strong>SJ:</strong> Sheather-Jones - 1991</p></li>
+<li><p><strong>ucv:</strong> Unbiased Cross-validation</p></li>
+</ul>
+<p>The <strong>Normal Reference</strong> procedure assumes that the general features of the density follow a Normal distribution. The accuracy of a Kernel Density estimator is measured by the Asymptotic Mean Integral of Squared Errors (AIMSE). The AIMSE of a kernel estimator, when bandwidth <span class="math inline">\(h\)</span> is minimized, depends on an unknown density. Mathematically, the minimized bandwidth quantity is related to density by a real-valued quantity <span class="math inline">\(R_2\)</span>. In relating a “reference distribution” to the unknown density, we can replace <span class="math inline">\(R_2\)</span> by its value for the reference distribution. When the density is assumed to be normal, we need to only estimate <span class="math inline">\(\sigma\)</span> using the standard deviation or IQR.
+<br><br>
+This approach leads to a value of the smoothing parameter that is easily calculated and works well for smooth distributions such as Normal. For reference, the minimized bandwidth is found by
+<br><br>
+<span class="math display">\[h^* = \Big(\frac{1}{2\sqrt{\pi}R_2}\Big)^\frac{1}{5}\frac{1}{n^\frac{1}{5}}\]</span>
+<br><br>
+where the Gaussian kernel is used and
+<br><br>
+<span class="math display">\[R_2 = \displaystyle\int_{-\infty}^{\infty}p&#39;&#39;(y)^2dy \sim 1.059\frac{\sigma}{n^\frac{1}{5}}\]</span>
+<br><br>
+The optimal bandwidth is a function of the integrated squared second derivative. The constant, <span class="math inline">\(1.059\)</span>, simply comes from using a Gaussian Kernel and assuming the density follows a Normal distribution. In many cases, however, the constant is too wide for other distributions. The <strong>Rule of Thumb</strong> method reduces the constant used the selection procedure to <span class="math inline">\(0.9\)</span>. Silverman chooses this value to avoid losing efficiency on Integrated Mean Squared error at the normal.
+<br><br>
+Another approach is to use a plug-in method. In a plug-in method, the bias of an estimate <span class="math inline">\(\hat g\)</span> is written as a function of an unknown <span class="math inline">\(g\)</span> and approximated through Taylor series expansions. A preliminary estimate is used to derivate an estimate of the bias (also known as the Integrated mean squared error). The <strong>Sheather-Jones</strong> method follows the plug-in approach, instead choosing a pilot estimate that best estimates the second derivative of the density function, rather than the density function itself. Sheather-Jones seems to work very well on a broad set of cases, as opposed to the Normal Reference procedure.
+<br><br>
+The methods described so far are based on the approximation to the integrated mean squared error given by the AIMSE. If the AIMSE is not an accurate approximation to the integrated mean squared error, then the smoothing parameter selected by these methods may not work well, even if <span class="math inline">\(R_2\)</span> is accurately estimated using either a reference distribution or a preliminary estimator. The last approach used, <strong>Cross-validation</strong>, is based on the idea of estimating the IMSE directly, without relying on the AIMSE. This is done by minimizing the objective function
+<br><br>
+<span class="math display">\[\int_{-\infty}^{\infty}\hat p(y; h)^2dy - \frac{2}{n}\displaystyle \sum_{i=1}^{n}\hat p_{-i}(Y_i; h)\]</span>
+<br><br>
+where <span class="math inline">\(p_{-i}\)</span> denotes the kernel density estimator based on all data points except <span class="math inline">\(Y_i\)</span>.
+<br><br>
+This idea applies to a wide range of methods, including multivariate density estimation and kernel estimation of a regression function. However, it is known to be more likely to result in poor choices. This is possibly because the method requires numerical minimization of an objective function, which can be a challenging computational problem depending on the shape of the objective function. A more complex objective function can cause overfitting.<br />
+<br><br>
+<img src="public/post/2020_14_6_opioid_nonparam_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" />
+<br><br>
+Regardless of bandwidth selectors, each density estimate indicated a rise in deaths per day from 2012-2018.</p>
+Since we know there was a surge in Synthetic opioids and a significant increase in overall deaths, we should look at Fentanyl deaths during this period.
+<br><br>
+The following table shows the proportion of drug overdoses that involved Fentanyl and year.
+<br><br>
+<table class="table table-striped" style="width: auto !important; float: left; margin-right: 10px;">
+<caption>
+<span id="tab:fent">Table 1: </span>Table 1: Proportion of Deaths related to Fentanyl over Time (Years)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Year
+</th>
+<th style="text-align:right;">
+Proportion of Deaths
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2012
+</td>
+<td style="text-align:right;">
+0.04
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2013
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2014
+</td>
+<td style="text-align:right;">
+0.13
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+0.26
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+0.53
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+0.65
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+0.75
+</td>
+</tr>
+</tbody>
+</table>
+<p><br><br><br><br>
+<br><br>
+<strong>43.64%</strong> of deaths over the six-year study were related to Fentanyl deaths. This is an astounding percentage, given that before 2015, three years into the study, Fentanyl was found in less than 30% of deaths. Nearly <strong>74.6%</strong> of those who died in 2018 had Fentanyl in their body.
+<br><br><br><br>
+<br><br>
+If plotted by year, the table would appear to follow logistic growth. We can test this claim by model-checking using nonparametric regression. We can run a nonparametric regression and test whether a linear model fits the data. This can be done by comparing the sum of squared errors. If the linear model fits the data, we expect that <span class="math inline">\(SSE_{linear} = SSE_{nonparametric}\)</span>. Another expression of this is
+<br><br>
+<span class="math display">\[\displaystyle\sum_{i=1}^{n} e_j^2 = \displaystyle\sum_{i=1}^{n}(Y_i - \hat m(X_i))^2\]</span>
+<br><br>
+where <span class="math inline">\(\hat m(X_i)\)</span> is the local-linear kernel estimator of <span class="math inline">\(m(\cdot)\)</span>. Simply put, <strong>the residuals between both models should be the same.</strong> This implies that the square of the linear model’s residuals is close to zero. Additionally, we can measure the model’s goodness-of-fit by finding the ratio of the linear model’s SSE to the nonparametric model’s SSE. <a href="https://cran.r-project.org/web/packages/sm/sm.pdf" target="_blank"><kbd><strong>sm.regression</strong></kbd></a> features of an argument <strong>model = linear</strong>, which tests the hypothesis that a linear function explains the relationship between the variables.
+<br><br>
+Unfortunately, there’s not much data to back up our claims of nonlinear growth. Let’s change the time parameter from Years to Months for more data points. Let’s also look at the number of deaths over time.
+<br><br></p>
+<pre><code>## Test of linear model:  significance =  0</code></pre>
+<pre><code>## Test of linear model:  significance =  0</code></pre>
+<img src="public/post/2020_14_6_opioid_nonparam_files/figure-html/monthly-1.png" width="672" />
+<table>
+<tr>
+<th>
+Proportion of Deaths
+</th>
+<th>
+Number of Deaths(Monthly)
+</th>
+</tr>
+<tr>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Degrees-of-Freedom</th>
+<th align="left">Error Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">7.2</td>
+<td align="left">0.062 (6.2%)</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Degrees-of-Freedom</th>
+<th align="center">Error Variance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">7.2</td>
+<td align="center">7 (7 deaths)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</table>
+<p>The small p-value suggests that the hypothesis that the linear relationship is appropriate is rejected; that is, the relationship between the proportion of drug-related deaths involving Fentanyl and time is not linear.</p>
+</div>
+<div id="transforming-nonlinear-data" class="section level2">
+<h2>Transforming Nonlinear Data</h2>
+<p>Let’s look at the growth of Fentanyl Deaths by Number of Deaths. We know that the relationship between Time and Fentanyl Deaths is not linear. The nonparametric estimate seems to follow a sigmoidal curve. However, It doesn’t seem like we’re seeing the deaths hit an asymptote. The number of deaths becomes more disperse during the 60th - 80th months (2017 - 2018).
+<br><br>
+Fentanyl deaths may follow exponential growth. Let’s test whether this is true or not. A multiplicative model, like an exponential one, corresponds to an additive model on the log scale. This means that we can verify that the data is exponentiated if time follows a linear relationship with the logarithm of deaths.
+<br><br>
+This will also allow us to use linear regression tools to predict the trajectory of Fentanyl deaths.
+<br><br>
+Let’s try plotting Time and Fentanyl Deaths, using the logarithm of Fentanyl Deaths.</p>
+<pre class="r"><code>logx &lt;- log(fentrate.ym.ful$x)
+fentrate.ym.ful$logx &lt;- logx
+head(fentrate.ym.ful)</code></pre>
+<pre><code>##       m_y x ind logx
+## 1 2012-01 0   1 -Inf
+## 2 2012-02 1   2 0.00
+## 3 2012-03 1   3 0.00
+## 4 2012-04 1   4 0.00
+## 5 2012-05 1   5 0.00
+## 6 2012-06 2   6 0.69</code></pre>
+<p>We’ve run into some trouble - we can’t take the log of zero. Let’s just add every entry in the number of deaths column by 1.</p>
+<pre><code>##       m_y x ind logx
+## 1 2012-01 0   1 0.00
+## 2 2012-02 1   2 0.69
+## 3 2012-03 1   3 0.69
+## 4 2012-04 1   4 0.69
+## 5 2012-05 1   5 0.69
+## 6 2012-06 2   6 1.10</code></pre>
+<p>Great - now, let’s see how that turned out.</p>
+<pre class="r"><code>np.fent.full.log &lt;- sm.regression(ind, logx, data=fentrate.ym.ful, col=&quot;green&quot;, pch=19, xlab = &quot;Number of Months&quot;, ylab = &quot;Log Deaths&quot;, model=&quot;linear&quot;)</code></pre>
+<p><img src="public/post/2020_14_6_opioid_nonparam_files/figure-html/plot-1.png" width="672" /></p>
+<pre><code>## Test of linear model:  significance =  0</code></pre>
+<p>We can rule out that Deaths over Time follows exponential growth. A log transformation linearizes exponential data. We don’t have a linear relationship between the Log of Deaths and the number of months. In fact, the log-deaths model suggests that the growth in the number of deaths is slowing down.
+<br><br>
+So what do we do?</p>
+</div>
+<div id="modeling-logistic-growth" class="section level2">
+<h2>Modeling Logistic Growth</h2>
+<p>We know that the growth of deaths is partially exponential. A good part of the log deaths model is linear. We also know that the growth rate of deaths slowed down after 2017.
+<br><br>
+Remember how our nonparametric estimate followed a sigmoidal curve? I do too. A sigmoid function follows the same partial exponential growth and decreasing growth rate we see in our data. A common sigmoid function is the logistic function. <br><br>
+The logistic growth model can be written as
+<br><br>
+<span class="math display">\[P = \frac{K}{1 + e^{P_o + rt}}\]</span>
+<br><br>
+where</p>
+<ul>
+<li><p><span class="math inline">\(P\)</span>: population size (y)</p></li>
+<li><p><span class="math inline">\(t\)</span>: time (x)</p></li>
+<li><p><span class="math inline">\(P_o\)</span>: initial population size</p></li>
+<li><p><span class="math inline">\(r\)</span>: growth rate</p></li>
+<li><p><span class="math inline">\(K\)</span>: final population size.</p></li>
+</ul>
+<p>In our case, the population size is the number of deaths.
+<br><br>
+A logistic growth model can be implemented in R using <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/nls" target="_blank"><kbd><strong>nls</strong></kbd></a>, a non-linear least squares function. Unlike traditional OLS, non-linear least squares need initial starting parameters. The function iteratively evaluates model parameters and selects parameters that minimize model error. Without initial parameters, the function can’t compare the model to other parameters.
+<br><br>
+Finding good starting values is very important in nonlinear regression. If starting parameter values are outside of the range of potential parameter values, the algorithm will either fail or return something that doesn’t make sense.
+<br><br>
+The best way to find correct starting values is to “eyeball” the data, or plot the data and find an approximate asymptote, inflection point and slope.
+<br><br>
+This step can be bypassed by using self-starting functions with <a href="https://stat.ethz.ch/R-manual/R-devel/library/stats/html/SSlogis.html" target="_blank"><kbd><strong>SSlogis</strong></kbd></a>. This function creates an initial estimate of the parameters, which are then plugged into the nonlinear least squares function to find the best-fit logistic equation.
+<br><br>
+The <strong>SSlogis</strong> function fits a slightly different parameterization of the logistic function
+<br><br>
+<span class="math display">\[P = \frac{Asym}{1 + e^{\frac{xmid-t}{scal}}}\]</span>
+<br><br>
+where <span class="math inline">\(Asym = K, xmid = \frac{-P_o}{r}, scal = \frac{-1}{r}\)</span>.
+<br><br>
+However, everything means the same thing. <span class="math inline">\(Asym\)</span> is where the number of deaths plateau, <span class="math inline">\(xmid\)</span> is the x value at the inflection point of the logistic curve and <span class="math inline">\(scal\)</span> is how quickly the number of deaths approaches the asymptote.
+<img src="public/post/2020_14_6_opioid_nonparam_files/figure-html/nec-1.png" width="672" /></p>
+<pre><code>## 
+## Formula: x ~ SSlogis(ind, Asym, xmid, scal)
+## 
+## Parameters:
+##      Estimate Std. Error t value             Pr(&gt;|t|)    
+## Asym   66.785      2.883   23.17 &lt; 0.0000000000000002 ***
+## xmid   51.719      1.318   39.25 &lt; 0.0000000000000002 ***
+## scal    8.546      0.984    8.68     0.00000000000033 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 7.2 on 81 degrees of freedom
+## 
+## Number of iterations to convergence: 2 
+## Achieved convergence tolerance: 0.00000212</code></pre>
+<p>I don’t think that’s a bad fit. The curve suggests that deaths should level out at around 65-70 per month.
+<br><br>
+Let’s look at the residuals:</p>
+<pre><code>## 
+## ------
+##  Shapiro-Wilk normality test
+## 
+## data:  stdres
+## W = 1, p-value = 0.05
+## 
+## 
+## ------</code></pre>
+<pre><code>## 
+##  Runs Test
+## 
+## data:  as.factor(run)
+## Standard Normal = -1, p-value = 0.2
+## alternative hypothesis: two.sided</code></pre>
+<p>The errors are normally distributed. That’s good, but does this model make sense?
+<br><br>
+Let’s try to fit a logistic function on the proportion of deaths over time.
+<img src="public/post/2020_14_6_opioid_nonparam_files/figure-html/nmeg-1.png" width="672" /></p>
+<pre><code>## 
+## Formula: prop ~ SSlogis(ind, Asym, xmid, scal)
+## 
+## Parameters:
+##      Estimate Std. Error t value            Pr(&gt;|t|)    
+## Asym   0.8275     0.0388    21.3 &lt;0.0000000000000002 ***
+## xmid  50.6975     1.6864    30.1 &lt;0.0000000000000002 ***
+## scal  11.8108     1.0914    10.8 &lt;0.0000000000000002 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.071 on 81 degrees of freedom
+## 
+## Number of iterations to convergence: 0 
+## Achieved convergence tolerance: 0.00000268</code></pre>
+<pre><code>## 
+## ------
+##  Shapiro-Wilk normality test
+## 
+## data:  stdres
+## W = 1, p-value = 0.3
+## 
+## 
+## ------</code></pre>
+<pre><code>## 
+##  Runs Test
+## 
+## data:  as.factor(run)
+## Standard Normal = -1, p-value = 0.3
+## alternative hypothesis: two.sided</code></pre>
+<p>This model isn’t a bad fit either - the errors are also normally distributed. The model suggests that Fentanyl will account for <strong>around 80-85% of drug-related deaths.</strong> This is a huge percentage - nearly 9 out of 10 drug overdoses involve Fentanyl.
+<br><br>
+For clarity’s sake, let’s summarize what we know so far:</p>
+<ul>
+<li><p>Drug overdose rates have steadily increased since 2012 - more people are dying from drugs.</p></li>
+<li><p>In 2012, Fentanyl was involved in less than 10% of drug overdoses. In 2018, Fentanyl was involved in more than 80% of drug overdoses.</p></li>
+<li><p>The number of drug-related deaths related to Fentanyl and the proportion of drug-related deaths related to Fentanyl both follow a logistic curve over time.</p></li>
+</ul>
+<p>So what do those curves mean anyway? The asymptote for the number of deaths could suggest that the population that uses Fentanyl is at its maximum. Given that Fentanyl is attributed to most drug deaths, one could expect that Fentanyl is being used or cut with other drugs. Keep in mind that the heroin epidemic and the synthetic opioid epidemic are happening concurrently. As of now, we can’t say much. If anything, we have more questions:</p>
+<p>Are Fentanyl deaths correlated with Heroin deaths or other drug deaths? Is it taken by older people, who may have other comorbidities? How often is Fentanyl taken alone?
+<br><br>
+We didn’t do much Exploratory Data Analysis at all, so let’s revisit these graphs after we explore the data a bit more. If you have the time, check out my second article where I try to answer some of those questions using barplots, heat maps, and other data visualization techniques.</p>
+</div>

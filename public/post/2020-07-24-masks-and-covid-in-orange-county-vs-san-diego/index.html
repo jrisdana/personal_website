@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="HandheldFriendly" content="True" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta name="generator" content="Hugo 0.79.0" />
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/amzrk2/cdn-stcapi@1/favicons/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/amzrk2/cdn-stcapi@1/favicons/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/gh/amzrk2/cdn-stcapi@1/favicons/favicon-16x16.png" />
+<link rel="manifest" href="https://cdn.jsdelivr.net/gh/amzrk2/cdn-stcapi@1/favicons/site.webmanifest" />
+<link rel="mask-icon" href="https://cdn.jsdelivr.net/gh/amzrk2/cdn-stcapi@1/favicons/safari-pinned-tab.svg" color="#8aa2d3" />
+<link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/amzrk2/cdn-stcapi@1/favicons/favicon.ico" />
+<meta name="theme-color" content="#ffffff" />
+
+
+<title>Masks and COVID in Orange County vs. San Diego - Jason Risdana</title>
+
+
+<meta name="author" content="Jason Risdana" />
+
+
+<meta name="description" content="A minimal Hugo theme with nice theme color." />
+
+
+<meta name="keywords" content="covid, eda, diff_in_diff, causal_inference" />
+
+<meta property="og:title" content="Masks and COVID in Orange County vs. San Diego" />
+<meta property="og:description" content="
+
+
+
+“Do mask requirement mandates aﬀect the growth of COVID cases in an area?”
+
+I speculate the causality of this claim by analyzing Orange County and San Diego County as possible treatment and control. To do this, I’ll explore the COVID cases data from March 18th to July 18th and propose an identification strategy, endogeneity concerns, and possible ways to deal with them.
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://example.com/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/" />
+<meta property="og:image" content="https://example.com/img/og.png"/>
+<meta property="article:published_time" content="2020-07-24T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-24T00:00:00+00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://example.com/img/og.png"/>
+
+<meta name="twitter:title" content="Masks and COVID in Orange County vs. San Diego"/>
+<meta name="twitter:description" content="
+
+
+
+“Do mask requirement mandates aﬀect the growth of COVID cases in an area?”
+
+I speculate the causality of this claim by analyzing Orange County and San Diego County as possible treatment and control. To do this, I’ll explore the COVID cases data from March 18th to July 18th and propose an identification strategy, endogeneity concerns, and possible ways to deal with them.
+"/>
+
+
+
+<style>
+    @media (prefers-color-scheme: dark) {
+        body[data-theme='auto'] img {
+            filter: brightness(60%);
+        }
+    }
+
+    body[data-theme='dark'] img {
+        filter: brightness(60%);
+    }
+</style>
+
+
+
+<link rel="stylesheet" href="https://example.com/assets/css/fuji.min.css" />
+
+
+
+
+
+</head>
+
+<body data-theme="auto">
+    <script data-cfasync="false">
+  
+  var fujiThemeData = localStorage.getItem('fuji_data-theme');
+  
+  if (!fujiThemeData) {
+    localStorage.setItem('fuji_data-theme', 'auto');
+  } else {
+    
+    if (fujiThemeData !== 'auto') {
+      document.body.setAttribute('data-theme', fujiThemeData === 'dark' ? 'dark' : 'light');
+    }
+  }
+</script>
+
+    <header>
+    <div class="container-lg clearfix">
+        <div class="col-12 header">
+            <a class="title-main" href="https://example.com">Jason Risdana</a>
+            
+            <span class="title-sub">Personal website</span>
+            
+        </div>
+    </div>
+</header>
+
+    <main>
+        <div class="container-lg clearfix">
+            
+            <div class="col-12 col-md-9 float-left content">
+                
+<article>
+    
+    <h2 class="post-item post-title">
+        <a href="https://example.com/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/">Masks and COVID in Orange County vs. San Diego</a>
+    </h2>
+    <div class="post-item post-meta">
+        <span><i class="iconfont icon-today-sharp"></i>&nbsp;2020-07-24</span><span><i class="iconfont icon-time-sharp"></i>&nbsp;14 minutes</span><span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href="/tags/covid">covid</a>&nbsp;<a href="/tags/eda">eda</a>&nbsp;<a href="/tags/diff_in_diff">diff_in_diff</a>&nbsp;<a href="/tags/causal_inference">causal_inference</a>&nbsp;</span>
+
+    </div>
+    
+    
+    <div class="post-content markdown-body">
+        I’m from Orange County. Orange County has been in the news a lot lately. Unfortunately, it’s because of <a href="https://www.latimes.com/california/story/2020-07-15/back-to-school-in-orange-county-without-masks-and-social-distancing-many-call-that-reckless" target="_blank">this</a>. Orange County has had a lot of protests to reopen the county throughout lockdown. On June 9th, Orange County’s Chief Health Officer resigned after threats and criticism by anti-Mask protesters and Orange County Supervisors. Two days later, officials ended the mask requirement mandate. However, San Diego County, which is just south of Orange County, kept mask requirements.
+<br><br>
+Seeing that cases are now on the rise nationally and that my home has turned into the No-Mask movement’s epicenter, it seemed appropriate to look at whether there is an effect in mask requirement laws. We’ll first compare county cases over time and then outline an identification strategy that can validate a causal claim.</p>
+<blockquote>
+<p><strong>Why San Diego?</strong>: If we’re looking for any kind of causal effect in mask requirement laws and we’re using Orange County as our treatment, San Diego County is a good control. San Diego’s proximity to Orange County helps control for any regional/climate effects. They are similar in <a href="https://www.counties.org/sites/main/files/file-attachments/california_county_population_estimates_2016.pdf" target="_blank">population size</a>, differing only by 100,000 people. Both counties lean more conservative than other California industry centers (Los Angeles, San Francisco), and <a href="https://datausa.io/profile/geo/orange-county-ca" target="_&quot;blank&quot;">both economies rely on manufacturing and trade</a>. Lastly, both counties <a href="https://www.sandiegouniontribune.com/news/health/story/2020-05-01/protesters-hit-the-streets-as-mask-regulations-take-effect-and-county-announces-10-new-deaths" target="_blank">experienced protests against the mask requirement order</a>.</p>
+</blockquote>
+<p>Most importantly, both counties began to open businesses and attractions at similar times, so we can control for growth from relaxing other COVID-related restrictions.
+<br><br>
+I’m going to use <a href="https://ggplot2.tidyverse.org/" target="_blank"><kbd>ggplot2</kbd></a> to graph the cases over time and <a href="https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html" target="_blank"><kbd>cowplot</kbd></a> to help with formatting.</p>
+<p>The data comes from <a href="https://data.ca.gov/dataset/covid-19-cases" target="_blank">California Open Data Portal</a>.</p>
+<div id="subsetting-the-dataset" class="section level2">
+<h2>Subsetting the Dataset</h2>
+<p>The dataset does not contain data before March 17th except for total COVID cases. I subsetted the data frame into two separate data frames to get county specific data. I also created a column that counts the number of days since March 18th (beginning of the dataset). Then, I used <a href="https://www.statmethods.net/management/merging.html" target="_blank"><kbd>rbind</kbd></a> to merge county-specific datasets together. I think there is an easier way to subset a dataset by using <a href="https://www.statmethods.net/management/subset.html" target="_blank"><kbd>select</kbd></a>, but I wanted to create a number-of-days column for each county. I’m sure, though, that there’s a faster way to create an index column - I’ll update this article with cleaner code at some point.</p>
+<pre class="r"><code>oc.covid &lt;- covid[ which(covid$county ==&#39;Orange&#39;), ]
+oc.covid$ind &lt;- 1:nrow(oc.covid)
+sd.covid &lt;- covid[ which(covid$county == &#39;San Diego&#39;),]
+sd.covid$ind &lt;- 1:nrow(sd.covid)
+comp_covid &lt;- rbind(oc.covid, sd.covid)</code></pre>
+<p>I also renamed the columns to follow my work.</p>
+<pre class="r"><code>colnames(comp_covid) &lt;- c(&quot;county&quot;, 
+                          &quot;total_count&quot;, 
+                          &quot;deaths&quot;, 
+                          &quot;daily_count&quot;, 
+                          &quot;daily_deaths&quot;,
+                          &quot;date&quot;,
+                          &quot;ind&quot;)</code></pre>
+</div>
+<div id="asymptomatic-period" class="section level2">
+<h2>Asymptomatic Period</h2>
+<p>I created two vertical lines on the 86th and 100th point of the x-axis in my graph.</p>
+<p><em>Why?</em> The x-axis denotes the number of days since March 18th. June 11th was the date when Orange County lifted the mask requirement. The two vertical lines highlight the maximum number of days for an infected person to be asymptomatic. These lines, which will look like a rectangle when graphed, start from the day officials lifted the mask mandate. In rare cases, symptoms can show up after 14 days, but the main idea behind highlighting the “Incubation Period” of the virus is that we can measure the effects from at least one day without the mask requirement.</p>
+<pre class="r"><code>rect &lt;- data.frame(xmin=86, xmax=100, 
+                   ymin = -Inf, ymax = Inf)</code></pre>
+</div>
+<div id="graphing-total-cases" class="section level2">
+<h2>Graphing Total Cases</h2>
+<p>The black vertical dashed line is the date when Orange County’s Health Officer resigned, and the transparent rectangle is the following 14-day Coronavirus Incubation period. During the Incubation Period, we can see that the total Orange County cases curve approaches the San Diego’s total case curve at an increasing rate, indicating that more people in Orange County are contracting COVID-19 than in San Diego County. After the 100th day, total cases in Orange County surpass total cases in San Diego County. Orange County’s daily case rate continues to increase from that day.</p>
+<p>Some important information - Governer Newsom ordered Orange County to <a href="https://www.latimes.com/california/story/2020-06-18/california-mandatory-face-masks-statewide-order-coronavirus-gavin-newsom" target="_blank">enforce the mask mandate on June 18th</a>. Let’s add this to our graph.</p>
+<pre class="r"><code>ggplot(data=comp_covid, aes(x = ind, y = total_count)) + 
+  geom_point(aes(color = factor(county))) + 
+  geom_vline(xintercept=84, linetype=&quot;dashed&quot;, color = &quot;black&quot;) + 
+  geom_vline(xintercept=92, linetype=&quot;dashed&quot;, color = &quot;green&quot;) + 
+  geom_rect(data = rect, 
+            aes(xmin = xmin, 
+                xmax = xmax, 
+                ymin = ymin, 
+                ymax = ymax), 
+            color=&quot;cornflowerblue&quot;,
+            alpha = 0.1, 
+            inherit.aes = FALSE) + 
+  ggtitle(&quot;Total New COVID Cases&quot;) +
+  theme(plot.title = element_text(lineheight=.8, face=&quot;bold&quot;), 
+        legend.title = element_text(lineheight=.8, face=&quot;bold&quot;)) +
+  guides(col=guide_legend(&quot;County&quot;)) + 
+  labs( 
+       x = &quot;Number of Days since 3/18&quot;,
+       y = &quot;Total Number of Cases&quot;) </code></pre>
+<p><img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/total-1.png" width="672" />
+Here’s an interesting point - COVID cases in Orange County grew at a similar rate to those of San Diego County until the end of the Incubation period. Afterwards, COVID cases in Orange County grew at a much faster rate than those of San Diego County.
+<br><br>
+A <strong>lagging indicator</strong> is economics jargon for a variable that becomes apparent only after a large, long-term shift occured. Infections, or the case rate, is a lagging indicator - the Incubation period accounts for time when infected individuals may be asymptomatic, or unaware that they are carrying the disease. Death occurs after infection, so naturally, death is <em>also</em> a lagging indicator. However, we don’t know how long it takes to die from COVID - some people die within days of contracting the virus, while some others die after several months.
+<br><br>
+With this in mind, let’s see how the death rate compares across counties.</p>
+<pre class="r"><code>ggplot(data=comp_covid, aes(x = ind, 
+                              y = deaths)) + 
+  geom_point(aes(color = county)) + 
+  geom_vline(xintercept=84, 
+             linetype=&quot;dashed&quot;, 
+             color = &quot;black&quot;) +
+  geom_vline(xintercept=92, linetype=&quot;dashed&quot;, color = &quot;green&quot;) + 
+    geom_rect(data = rect, 
+            aes(xmin = xmin, 
+                xmax = xmax, 
+                ymin = ymin, 
+                ymax = ymax), 
+            color=&quot;cornflowerblue&quot;,
+            alpha = 0.1, 
+            inherit.aes = FALSE) + 
+  ggtitle(&quot;Total COVID Deaths&quot;) +
+  theme(plot.title = element_text(lineheight=.8, face=&quot;bold&quot;), 
+        legend.title = element_text(lineheight=.8, face=&quot;bold&quot;)) +
+  guides(col=guide_legend(&quot;County&quot;)) + 
+  labs(x = &quot;Number of Days since 3/18&quot;,
+       y = &quot;Total Deaths&quot;)</code></pre>
+<p><img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/death-1.png" width="672" />
+Again this is quite interesting, the death rate is higher in Orange County relative to San Diego County during the Incubation Period and afterwards. By the end of the of the graph, the number of deaths in Orange County match the number of deaths in San Diego County. This is the first time that there were more total deaths in Orange County than in San Diego County.</p>
+<p>Another, arguably better way to visualize COVID cases over time and account for the 14 day incubation period is to plot cases by two week periods. These periods need to be, at the very least, divided before and after the highlighted Incubation period. We can then compare the COVID case rate by Incubation periods. This helps visualize the full impact of the virus in one day, by accounting for the maximum amount of time an infected person can stay asymptomatic. This also gives us a simple and powerful visualization of COVID cases over time. Simple and legible data visualization can go a long way.</p>
+<pre class="r"><code>library(dplyr)
+comp_covid_adj &lt;- 
+  comp_covid %&gt;% 
+  mutate(period = ceiling((ind+2)/14))
+comp_covid_adj$period &lt;- as.factor(comp_covid_adj$period)</code></pre>
+</div>
+<div id="creating-a-two-week-period-column" class="section level2">
+<h2>Creating a Two-Week period column</h2>
+<p>Through the <a href="https://dplyr.tidyverse.org/" target="_blank"><kbd>dplyr</kbd></a> package, I used the <strong>mutate</strong> function to divide the number of days column by 14 and round the result to the smallest integer that was greater than or equal to the result. To start an Incubation period on the date the mask requirement was lifted, I added two to the number of days.
+<br><br>
+Since the ninth two-week period is not done yet, we will filter out data that falls into the ninth two-week period. Adding incomplete data will not allow us to analyze the relationship properly.</p>
+<pre class="r"><code>comp_covid_adj$period_int &lt;- as.numeric(comp_covid_adj$period)
+covid_rn &lt;- filter(comp_covid_adj, period_int &lt; 9)</code></pre>
+<p>We added a <strong>numeric</strong> period column so that we could filter the dataset using inequalities. This will allow us to use a linear graph for further visualization.</p>
+<p>For now, we’ll look at period as a <strong>factor</strong>. To visualize the number of new COVID cases per period, let’s create a grouped barplot.</p>
+<pre class="r"><code>ggplot(data=covid_rn, 
+       aes(x = period, 
+           y = total_count, 
+           fill = county)) + 
+  geom_bar(position=&quot;dodge&quot;, 
+           alpha = 0.75, 
+           stat=&quot;identity&quot;) + 
+  geom_vline(xintercept=6, 
+             linetype=&quot;dashed&quot;, 
+             color = &quot;black&quot;) + 
+  geom_vline(xintercept=6.5, 
+             linetype=&quot;dashed&quot;, 
+             color = &quot;green&quot;) + 
+        geom_vline(xintercept=7, 
+             linetype=&quot;dashed&quot;, 
+             color = &quot;black&quot;) +
+  ggtitle(&quot;Total New COVID Cases&quot;) +
+  theme(plot.title = 
+          element_text(lineheight=.8, face=&quot;bold&quot;), 
+        legend.title = 
+          element_text(lineheight=.8, face=&quot;bold&quot;))+
+  guides(col=guide_legend(&quot;County&quot;)) + 
+  labs(x = &quot;Number of Two Week Periods since 3/18&quot;,
+       y = &quot;Total Number of Cases&quot;)</code></pre>
+<p><img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/period_graph-1.png" width="672" />
+The 6th period begins on the date mask requirements were lifted and the 7th period begins on the last day of the Incubation period.</p>
+<p>The total new cases for the 7th period only accounts for people who contracted the virus before/by the end of the incubation period starting on June 11th. People who contracted the virus after the beginning of the 6th period, but did not develop symptoms before the end the 7th period, will not be recorded as COVID cases until the 8th period.</p>
+<p>What’s great about this graph is that it gives us a better idea of the case rate in each county by smoothing out our data. Both barplots outline exponential growth, and we can clearly see that Orange County is growing at a much faster rate.</p>
+<p>Specifically, this graph better highlights the dramatic increase in Orange County total cases from the 7th period to the 8th period. That is, Orange County gained more COVID cases after June 11th than did San Diego - the period after Orange County lifted its mask requirements.</p>
+</div>
+<div id="aside-looking-at-the-daily-count" class="section level2">
+<h2>Aside: Looking at the Daily Count</h2>
+<p>Let’s also look at the daily count of COVID cases among both counties and figure out if there’s a better way to visualize this.
+<br><br>
+<img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/sec-1.png" width="672" />
+This graph is messy and hard to look at, but we can glean from it that daily COVID cases increased after the highlighted Incubation Period.</p>
+<p>Let’s look at Daily COVID cases over the beginning of Incubation periods, with the dashed lines denoting before and after the Incubation Period for June 11th. We’ll also use a grouped barplot to better organize the data points for visualization.
+<br><br>
+<img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/sec_2-1.png" width="672" />
+This graph shows that the daily count for COVID cases on the 6th period was similar between both counties. The Orange County daily count was higher than that of San Diego on the 7th period.</p>
+<p>The first graph shows us how the amount of COVID cases changed after intervention.</p>
+<p>In the second graph, we can see the difference in relative rate of cases between counties after intervention. <em>This</em> helps us understand the scale of the outbreak relative to San Diego.</p>
+<p>We can see that, after six days without a mask mandate, Orange County had <strong>nearly three times the number of COVID cases</strong> as San Diego.</p>
+</div>
+<div id="revisiting-the-total-cases-graph" class="section level2">
+<h2>Revisiting the Total Cases Graph</h2>
+<p>Let’s see whether we can use this data to determine if there is a causal effect in mask requirement laws. To make a causal claim, we need an identification strategy. We’ll look at endogeneity concerns in this experiment and the feasibility of a <strong>Difference-in-Differences</strong> analysis.
+<br><br>
+<strong>What’s Difference-in-Differences?</strong> Our COVID dataset uses <strong>longitudinal data</strong> - that is, a dataset in which we can see multiple observations of an individual at different times. Longitudinal data allows us to see outcomes and treatment for multiple periods in an experiment. Observation terms therefore account for individual effects and time effects, since observations on one person can change over time.</p>
+<p>To clarify, our treatment is no mask mandate and our control is keeping the mask mandate. Our treated group is Orange County and our control group is San Diego County.</p>
+<p>In order to estimate causal effect using <strong>DID</strong>, several assumptions must hold, one of them being:</p>
+<ul>
+<li><strong>Exchangeability</strong> - Data came from a randomized trial</li>
+</ul>
+<p>We did not randomize anything in this study - COVID-19 happened and some states/counties reacted differently. Since we didn’t get this data from a <strong>randomized control trial</strong> (any study that randomly assigns individuals to treatment and control groups), we have to use the next best thing. That is, we have to find treatment and control groups that are as close as possible to each other. We also want to make sure that our treatment limits selection bias. Fortunately, our treatment doesn’t rely on whether individuals want to have no mask mandate or a mask mandate - Orange County and San Diego County officials chose to do different things during the pandemic, whether individuals want it or not.</p>
+<p>Treatment could be correlated with unobserved individual-level shifters. We assume these shifters are constant within-individual across time and additively shift the outcome. While San Diego and Orange County have a lot in common, we still need to account for fixed effects such as the time the data was recorded.</p>
+In <strong>DID</strong>, we look at parallel trends between the treated and control group before and after intervention, assuming that each trend will stay parallel. Controlling for fixed effects and other covariates, we then measure the difference between the actual treatment line and the assumed parallel line. The best way for me to understand this is through the Potential Outcomes Framework. That is,
+<span class="math display">\[E(Y_{i2}(1) - Y_{i1}(0)|D_i = 1) - E(Y_{i2}(0)- Y_{i1}(0)|D_i = 1)\]</span>
+where <span class="math inline">\(i\)</span> is an index for individual changes and <span class="math inline">\(1, 2\)</span> are time periods. When <span class="math inline">\(Y(1)\)</span>, the individual was treated. When <span class="math inline">\(Y(0)|D = 1\)</span>, we are looking at the counterfactual - that is, the outcome where a treated indivudal was not treated. Since we can’t look at at two different outcomes for an individual, we need to assume what the outcome would’ve been. This is why we need parallel trends before intervention! This might be confusing, so here’s a graph I do not own of a perfect Difference-in-Differences Estimation.
+<br><br>
+<center>
+<img src="/img/did.png" title="fig:" alt="DID" />
+</center>
+<p><br><br>
+<strong>The main idea</strong> is that the difference in the control group is what the difference in the treated group would have been, had it not been for treatment.
+<br><br>
+When writing out the general model, we denote</p>
+<ul>
+<li><p><span class="math inline">\(\beta_0\)</span> as the baseline average</p></li>
+<li><p><span class="math inline">\(\beta_1\)</span> as the time trend in the control group</p></li>
+<li><p><span class="math inline">\(\beta_2\)</span> as the difference between groups pre-intervention</p></li>
+<li><p><span class="math inline">\(\beta_3\)</span> as the difference in changes over time. That is, the difference in the treatment’s difference and the control’s difference over time.</p></li>
+</ul>
+<p>and <span class="math display">\[ Y_{it} = \beta_0 + \beta_1Time + \beta_2Intervention + \beta_3Time*Intervention \]</span></p>
+<p>We can find the Difference-in-Differences through intertemporal variation between groups. In less jargon, we can look at the dependency between Time and Intervention to identify a causal effect.</p>
+</div>
+<div id="context" class="section level2">
+<h2>Context</h2>
+<p>If we assume San Diego is a good reference for Orange County, and that trends the 84th day or the 86th day were nearly parallel, we could use <strong>Difference-In-Differences</strong> analysis to quantify the causal effect of lifting mask requirement after protests. We assume that, by lifting the mask requirement and undermining advice from top Health officials, the government encouraged a relaxed attitude towards combatting the virus and caused more infections.</p>
+<p>Let’s look at the rest of the assumptions needed to do <strong>DID</strong> analysis.</p>
+<ul>
+<li><p><strong>Positivity</strong> - Any individual has a positive probability of receiving all values of the treatment variable.</p></li>
+<li><p><strong>Consistency</strong> - If <span class="math inline">\(Y_i\)</span> is selected for treatment, We are observing the potential outcome of <span class="math inline">\(Y_i\)</span> being treated.</p></li>
+<li><p><strong>SUTVA</strong> - The observation of one unit is unaffected by the assignment of treatments to other units.</p></li>
+<li><p>Allocation of intervention was not determined by outcome</p></li>
+</ul>
+<p>Let’s look at a linear graph of COVID cases over our two-week periods and evaluate whether this graph is suitable for DID.
+<img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/diff_in_diff-1.png" width="672" />
+<br><br>
+Unfortunately, we’ve violated some of these assumptions. In fact, we didn’t have to look at this graph to find that out.
+<br><br>
+Let’s look at <strong>SUTVA</strong>. In context with our data, San Diego’s COVID cases should not depend on whether or not Orange County lifts the mask mandate - but it certainly could. Many people commute from Orange County to San Diego, and with businesses reopening/relaxed restrictions, Orange County folks may visit dense tourist centers, infecting many people. While San Diego may have mask mandates in place, there will still be more people with COVID in San Diego County than if San Diego County closed its border with Orange County - increasing the likelihood of San Diegans getting COVID.
+<br><br>
+Moreover, it seems that our data is not parallel for the entire dataset. Lines seem parallel between the 2nd and 4th Incubation period, but cross between the 4th and the 6th Incubation period.</p>
+</div>
+<div id="more-problems" class="section level2">
+<h2>More Problems?</h2>
+<p>The strategy explained here is restricted to linearity. We know that the trajectory of COVID cases follow a logistic curve. This is a big problem, but this can be avoided by looking only at the regression from the 7th period to the 8th period. This will not catch the full impact of the causal effect though. However, it may be notable to at least recognize the existence of the effect.</p>
+<p>There are nonlinear <strong>DID</strong> methods, but I don’t know them. I will hopefully soon, but no, I don’t know them now.</p>
+<p>Even though <strong>DID</strong> doesn’t seem feasible, graphs can still tell us a lot. What can we take away from these visualizations?</p>
+<ul>
+<li><p>Orange County had had less cases than San Diego for 100 days. Now, there are more 6,471 COVID cases in Orange County than in San Diego (as of July 18th). COVID cases are increasing at a faster rate than ever.</p></li>
+<li><p>As of Early-July, Orange County has a COVID case rate nearly <strong>three times higher</strong> than that of San Diego. Before then, Orange County and San Diego had had similar rates in COVID cases. This statistic accounts for the lag in infections caused by the time it takes for a virus to become symptomatic (The frequently-mentioned-in-this-article Incubation Period).</p></li>
+</ul>
+</div>
+
+    </div>
+</article>
+
+
+<div class="license markdown-body">
+    <blockquote>
+        <p>Unless otherwise noted, the content of this site is licensed under <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
+               target="_blank">CC BY-NC-SA 4.0</a>.</p>
+    </blockquote>
+</div>
+
+
+
+            </div>
+            <aside class="col-12 col-md-3 float-left sidebar">
+    
+    <div class="sidebar-item sidebar-pages">
+        <h3>Pages</h3>
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+            <li>
+                <a href="/resume/">Resume</a>
+            </li>
+            
+            <li>
+                <a href="/archives/">Archives</a>
+            </li>
+            
+            <li>
+                <a href="/search/">Search</a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-links">
+        <h3>Links</h3>
+        <ul>
+            
+            <li>
+                <a href="https://github.com/jrisdana" target="_blank"><span>GitHub</span></a>
+            </li>
+            
+            <li>
+                <a href="https://twitter.com/jason_risdana" target="_blank"><span>Twitter</span></a>
+            </li>
+            
+            <li>
+                <a href="https://www.kaggle.com/alpas951" target="_blank"><span>Kaggle</span></a>
+            </li>
+            
+            <li>
+                <a href="https://www.linkedin.com/in/jrisdana/" target="_blank"><span>Linkedin</span></a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-tags">
+        <h3>Tags</h3>
+        <div>
+            
+            <span>
+                <a href="/tags/causal_inference/">causal_inference</a>
+            </span>
+            
+            <span>
+                <a href="/tags/covid/">covid</a>
+            </span>
+            
+            <span>
+                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+            </span>
+            
+            <span>
+                <a href="/tags/eda/">eda</a>
+            </span>
+            
+            <span>
+                <a href="/tags/logistic/">logistic</a>
+            </span>
+            
+            <span>
+                <a href="/tags/nonparametric/">nonparametric</a>
+            </span>
+            
+            <span>
+                <a href="/tags/opioid/">opioid</a>
+            </span>
+            
+        </div>
+    </div>
+    
+    
+    
+    <div class="sidebar-item sidebar-toc">
+        <h3>TOC</h3>
+        
+    </div>
+    
+    
+</aside>
+        </div>
+        <div class="btn">
+    <div class="btn-menu" id="btn-menu">
+        <i class="iconfont icon-grid-sharp"></i>
+    </div>
+    <div class="btn-toggle-mode">
+        <i class="iconfont icon-contrast-sharp"></i>
+    </div>
+    <div class="btn-scroll-top">
+        <i class="iconfont icon-chevron-up-circle-sharp"></i>
+    </div>
+</div>
+<aside class="sidebar-mobile" style="display: none;">
+  <div class="sidebar-wrapper">
+    
+    <div class="sidebar-item sidebar-pages">
+        <h3>Pages</h3>
+        <ul>
+            
+            <li>
+                <a href="/">Home</a>
+            </li>
+            
+            <li>
+                <a href="/about/">About</a>
+            </li>
+            
+            <li>
+                <a href="/resume/">Resume</a>
+            </li>
+            
+            <li>
+                <a href="/archives/">Archives</a>
+            </li>
+            
+            <li>
+                <a href="/search/">Search</a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-links">
+        <h3>Links</h3>
+        <ul>
+            
+            <li>
+                <a href="https://github.com/jrisdana" target="_blank"><span>GitHub</span></a>
+            </li>
+            
+            <li>
+                <a href="https://twitter.com/jason_risdana" target="_blank"><span>Twitter</span></a>
+            </li>
+            
+            <li>
+                <a href="https://www.kaggle.com/alpas951" target="_blank"><span>Kaggle</span></a>
+            </li>
+            
+            <li>
+                <a href="https://www.linkedin.com/in/jrisdana/" target="_blank"><span>Linkedin</span></a>
+            </li>
+            
+        </ul>
+    </div>
+    
+    <div class="sidebar-item sidebar-tags">
+        <h3>Tags</h3>
+        <div>
+            
+            <span>
+                <a href="/tags/causal_inference/">causal_inference</a>
+            </span>
+            
+            <span>
+                <a href="/tags/covid/">covid</a>
+            </span>
+            
+            <span>
+                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+            </span>
+            
+            <span>
+                <a href="/tags/eda/">eda</a>
+            </span>
+            
+            <span>
+                <a href="/tags/logistic/">logistic</a>
+            </span>
+            
+            <span>
+                <a href="/tags/nonparametric/">nonparametric</a>
+            </span>
+            
+            <span>
+                <a href="/tags/opioid/">opioid</a>
+            </span>
+            
+        </div>
+    </div>
+    
+    
+    
+    <div class="sidebar-item sidebar-toc">
+        <h3>TOC</h3>
+        
+    </div>
+    
+    
+  </div>
+</aside>
+    </main>
+
+    <footer>
+    <div class="container-lg clearfix">
+        <div class="col-12 footer">
+            
+            <span>&copy; 2020-2020
+                <a href="https://example.com">Jason Risdana</a>
+                
+                | Powered by <a href="https://github.com/amzrk2/hugo-theme-fuji/"
+                   target="_blank">Fuji-v2</a> &amp; <a href="https://gohugo.io/"
+                                                    target="_blank">Hugo</a> 
+            </span>
+        </div>
+    </div>
+</footer>
+
+    
+<script defer src="https://cdn.jsdelivr.net/combine/npm/medium-zoom@1.0.6,npm/lazysizes@5.2.2"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.21.0/components/prism-core.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/prismjs@1.21.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+
+
+<script defer src="/assets/js/fuji.min.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body);"
+></script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+"0","colnames(comp_covid) <- c(""county"", "
+"0","                          ""total_count"", "
+"0","                          ""deaths"", "
+"0","                          ""daily_count"", "
+"0","                          ""daily_deaths"","
+"0","                          ""date"","
+"0","                          ""ind"")"
