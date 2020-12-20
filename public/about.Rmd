@@ -13,5 +13,5 @@ My posts are either questions that I try to answer using statistical methods or 
 <center>
 **This is what I look like:** 
 
-![alt](/img/Jason2.PNG)
+![alt](/img/Jason2.png)
 </center>

@@ -12,7 +12,7 @@ tag:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-**For my resume in PDF format and additional information**, [click here](Resume_Current.pdf).
+**For my resume in PDF format and additional information**, [click here](/Resume_Current.pdf).
 
 ## Summary
 
