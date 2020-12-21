@@ -44,12 +44,12 @@ I speculate the causality of this claim by analyzing Orange County and San Diego
 " />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/" />
-<meta property="og:image" content="/img/og.png"/>
+<meta property="og:image" content="/img/white.jpg"/>
 <meta property="article:published_time" content="2020-07-24T00:00:00+00:00" />
 <meta property="article:modified_time" content="2020-07-24T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="/img/og.png"/>
+<meta name="twitter:image" content="/img/white.jpg"/>
 
 <meta name="twitter:title" content="Masks and COVID in Orange County vs. San Diego"/>
 <meta name="twitter:description" content="
@@ -77,7 +77,7 @@ I speculate the causality of this claim by analyzing Orange County and San Diego
 
 
 
-<link rel="stylesheet" href="/assets/css/fuji.min.css" />
+<link rel="stylesheet" href="../../assets/css/fuji.min.css" />
 
 
 
@@ -103,7 +103,7 @@ I speculate the causality of this claim by analyzing Orange County and San Diego
     <header>
     <div class="container-lg clearfix">
         <div class="col-12 header">
-            <a class="title-main" href="/">Jason Risdana</a>
+            <a class="title-main" href="../../">Jason Risdana</a>
             
             <span class="title-sub">Personal website</span>
             
@@ -119,10 +119,10 @@ I speculate the causality of this claim by analyzing Orange County and San Diego
 <article>
     
     <h2 class="post-item post-title">
-        <a href="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/">Masks and COVID in Orange County vs. San Diego</a>
+        <a href="../../post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/">Masks and COVID in Orange County vs. San Diego</a>
     </h2>
     <div class="post-item post-meta">
-        <span><i class="iconfont icon-today-sharp"></i>&nbsp;2020-07-24</span><span><i class="iconfont icon-time-sharp"></i>&nbsp;14 minutes</span><span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href="/tags/covid">covid</a>&nbsp;<a href="/tags/eda">eda</a>&nbsp;<a href="/tags/diff_in_diff">diff_in_diff</a>&nbsp;<a href="/tags/causal_inference">causal_inference</a>&nbsp;</span>
+        <span><i class="iconfont icon-today-sharp"></i>&nbsp;2020-07-24</span><span><i class="iconfont icon-time-sharp"></i>&nbsp;14 minutes</span><span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href="../../tags/covid">covid</a>&nbsp;<a href="../../tags/eda">eda</a>&nbsp;<a href="../../tags/diff_in_diff">diff_in_diff</a>&nbsp;<a href="../../tags/causal_inference">causal_inference</a>&nbsp;</span>
 
     </div>
     
@@ -185,7 +185,7 @@ comp_covid &lt;- rbind(oc.covid, sd.covid)</code></pre>
   labs( 
        x = &quot;Number of Days since 3/18&quot;,
        y = &quot;Total Number of Cases&quot;) </code></pre>
-<p><img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/total-1.png" width="672" />
+<p><img src="../../post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/total-1.png" width="672" />
 Here’s an interesting point - COVID cases in Orange County grew at a similar rate to those of San Diego County until the end of the Incubation period. Afterwards, COVID cases in Orange County grew at a much faster rate than those of San Diego County.
 <br><br>
 A <strong>lagging indicator</strong> is economics jargon for a variable that becomes apparent only after a large, long-term shift occured. Infections, or the case rate, is a lagging indicator - the Incubation period accounts for time when infected individuals may be asymptomatic, or unaware that they are carrying the disease. Death occurs after infection, so naturally, death is <em>also</em> a lagging indicator. However, we don’t know how long it takes to die from COVID - some people die within days of contracting the virus, while some others die after several months.
@@ -212,7 +212,7 @@ With this in mind, let’s see how the death rate compares across counties.</p>
   guides(col=guide_legend(&quot;County&quot;)) + 
   labs(x = &quot;Number of Days since 3/18&quot;,
        y = &quot;Total Deaths&quot;)</code></pre>
-<p><img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/death-1.png" width="672" />
+<p><img src="../../post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/death-1.png" width="672" />
 Again this is quite interesting, the death rate is higher in Orange County relative to San Diego County during the Incubation Period and afterwards. By the end of the of the graph, the number of deaths in Orange County match the number of deaths in San Diego County. This is the first time that there were more total deaths in Orange County than in San Diego County.</p>
 <p>Another, arguably better way to visualize COVID cases over time and account for the 14 day incubation period is to plot cases by two week periods. These periods need to be, at the very least, divided before and after the highlighted Incubation period. We can then compare the COVID case rate by Incubation periods. This helps visualize the full impact of the virus in one day, by accounting for the maximum amount of time an infected person can stay asymptomatic. This also gives us a simple and powerful visualization of COVID cases over time. Simple and legible data visualization can go a long way.</p>
 <pre class="r"><code>library(dplyr)
@@ -254,7 +254,7 @@ covid_rn &lt;- filter(comp_covid_adj, period_int &lt; 9)</code></pre>
   guides(col=guide_legend(&quot;County&quot;)) + 
   labs(x = &quot;Number of Two Week Periods since 3/18&quot;,
        y = &quot;Total Number of Cases&quot;)</code></pre>
-<p><img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/period_graph-1.png" width="672" />
+<p><img src="../../post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/period_graph-1.png" width="672" />
 The 6th period begins on the date mask requirements were lifted and the 7th period begins on the last day of the Incubation period.</p>
 <p>The total new cases for the 7th period only accounts for people who contracted the virus before/by the end of the incubation period starting on June 11th. People who contracted the virus after the beginning of the 6th period, but did not develop symptoms before the end the 7th period, will not be recorded as COVID cases until the 8th period.</p>
 <p>What’s great about this graph is that it gives us a better idea of the case rate in each county by smoothing out our data. Both barplots outline exponential growth, and we can clearly see that Orange County is growing at a much faster rate.</p>
@@ -264,11 +264,11 @@ The 6th period begins on the date mask requirements were lifted and the 7th peri
 <h2>Aside: Looking at the Daily Count</h2>
 <p>Let’s also look at the daily count of COVID cases among both counties and figure out if there’s a better way to visualize this.
 <br><br>
-<img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/sec-1.png" width="672" />
+<img src="../../post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/sec-1.png" width="672" />
 This graph is messy and hard to look at, but we can glean from it that daily COVID cases increased after the highlighted Incubation Period.</p>
 <p>Let’s look at Daily COVID cases over the beginning of Incubation periods, with the dashed lines denoting before and after the Incubation Period for June 11th. We’ll also use a grouped barplot to better organize the data points for visualization.
 <br><br>
-<img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/sec_2-1.png" width="672" />
+<img src="../../post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/sec_2-1.png" width="672" />
 This graph shows that the daily count for COVID cases on the 6th period was similar between both counties. The Orange County daily count was higher than that of San Diego on the 7th period.</p>
 <p>The first graph shows us how the amount of COVID cases changed after intervention.</p>
 <p>In the second graph, we can see the difference in relative rate of cases between counties after intervention. <em>This</em> helps us understand the scale of the outbreak relative to San Diego.</p>
@@ -291,7 +291,7 @@ In <strong>DID</strong>, we look at parallel trends between the treated and cont
 where <span class="math inline">\(i\)</span> is an index for individual changes and <span class="math inline">\(1, 2\)</span> are time periods. When <span class="math inline">\(Y(1)\)</span>, the individual was treated. When <span class="math inline">\(Y(0)|D = 1\)</span>, we are looking at the counterfactual - that is, the outcome where a treated indivudal was not treated. Since we can’t look at at two different outcomes for an individual, we need to assume what the outcome would’ve been. This is why we need parallel trends before intervention! This might be confusing, so here’s a graph I do not own of a perfect Difference-in-Differences Estimation.
 <br><br>
 <center>
-<img src="/img/did.png" title="fig:" alt="DID" />
+<img src="../../img/did.png" title="fig:" alt="DID" />
 </center>
 <p><br><br>
 <strong>The main idea</strong> is that the difference in the control group is what the difference in the treated group would have been, had it not been for treatment.
@@ -317,7 +317,7 @@ When writing out the general model, we denote</p>
 <li><p>Allocation of intervention was not determined by outcome</p></li>
 </ul>
 <p>Let’s look at a linear graph of COVID cases over our two-week periods and evaluate whether this graph is suitable for DID.
-<img src="/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/diff_in_diff-1.png" width="672" />
+<img src="../../post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego_files/figure-html/diff_in_diff-1.png" width="672" />
 <br><br>
 Unfortunately, we’ve violated some of these assumptions. In fact, we didn’t have to look at this graph to find that out.
 <br><br>
@@ -357,23 +357,23 @@ Moreover, it seems that our data is not parallel for the entire dataset. Lines s
         <ul>
             
             <li>
-                <a href="/">Home</a>
+                <a href="../../">Home</a>
             </li>
             
             <li>
-                <a href="/about/">About</a>
+                <a href="../../about/">About</a>
             </li>
             
             <li>
-                <a href="/resume/">Resume</a>
+                <a href="../../resume/">Resume</a>
             </li>
             
             <li>
-                <a href="/archives/">Archives</a>
+                <a href="../../archives/">Archives</a>
             </li>
             
             <li>
-                <a href="/search/">Search</a>
+                <a href="../../search/">Search</a>
             </li>
             
         </ul>
@@ -407,31 +407,31 @@ Moreover, it seems that our data is not parallel for the entire dataset. Lines s
         <div>
             
             <span>
-                <a href="/tags/causal_inference/">causal_inference</a>
+                <a href="../../tags/causal_inference/">causal_inference</a>
             </span>
             
             <span>
-                <a href="/tags/covid/">covid</a>
+                <a href="../../tags/covid/">covid</a>
             </span>
             
             <span>
-                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+                <a href="../../tags/diff_in_diff/">diff_in_diff</a>
             </span>
             
             <span>
-                <a href="/tags/eda/">eda</a>
+                <a href="../../tags/eda/">eda</a>
             </span>
             
             <span>
-                <a href="/tags/logistic/">logistic</a>
+                <a href="../../tags/logistic/">logistic</a>
             </span>
             
             <span>
-                <a href="/tags/nonparametric/">nonparametric</a>
+                <a href="../../tags/nonparametric/">nonparametric</a>
             </span>
             
             <span>
-                <a href="/tags/opioid/">opioid</a>
+                <a href="../../tags/opioid/">opioid</a>
             </span>
             
         </div>
@@ -461,23 +461,23 @@ Moreover, it seems that our data is not parallel for the entire dataset. Lines s
         <ul>
             
             <li>
-                <a href="/">Home</a>
+                <a href="../../">Home</a>
             </li>
             
             <li>
-                <a href="/about/">About</a>
+                <a href="../../about/">About</a>
             </li>
             
             <li>
-                <a href="/resume/">Resume</a>
+                <a href="../../resume/">Resume</a>
             </li>
             
             <li>
-                <a href="/archives/">Archives</a>
+                <a href="../../archives/">Archives</a>
             </li>
             
             <li>
-                <a href="/search/">Search</a>
+                <a href="../../search/">Search</a>
             </li>
             
         </ul>
@@ -511,31 +511,31 @@ Moreover, it seems that our data is not parallel for the entire dataset. Lines s
         <div>
             
             <span>
-                <a href="/tags/causal_inference/">causal_inference</a>
+                <a href="../../tags/causal_inference/">causal_inference</a>
             </span>
             
             <span>
-                <a href="/tags/covid/">covid</a>
+                <a href="../../tags/covid/">covid</a>
             </span>
             
             <span>
-                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+                <a href="../../tags/diff_in_diff/">diff_in_diff</a>
             </span>
             
             <span>
-                <a href="/tags/eda/">eda</a>
+                <a href="../../tags/eda/">eda</a>
             </span>
             
             <span>
-                <a href="/tags/logistic/">logistic</a>
+                <a href="../../tags/logistic/">logistic</a>
             </span>
             
             <span>
-                <a href="/tags/nonparametric/">nonparametric</a>
+                <a href="../../tags/nonparametric/">nonparametric</a>
             </span>
             
             <span>
-                <a href="/tags/opioid/">opioid</a>
+                <a href="../../tags/opioid/">opioid</a>
             </span>
             
         </div>
@@ -553,7 +553,7 @@ Moreover, it seems that our data is not parallel for the entire dataset. Lines s
         <div class="col-12 footer">
             
             <span>&copy; 2020-2020
-                <a href="/">Jason Risdana</a>
+                <a href="../../">Jason Risdana</a>
                 
                 | Powered by <a href="https://github.com/amzrk2/hugo-theme-fuji/"
                    target="_blank">Fuji-v2</a> &amp; <a href="https://gohugo.io/"
@@ -570,7 +570,7 @@ Moreover, it seems that our data is not parallel for the entire dataset. Lines s
 
 
 
-<script defer src="/assets/js/fuji.min.js"></script>
+<script defer src="../../assets/js/fuji.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>

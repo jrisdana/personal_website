@@ -44,12 +44,12 @@ This is the first in a series of articles dealing with the current Opioid Epidem
 " />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/2020_14_6_opioid_nonparam/" />
-<meta property="og:image" content="/img/og.png"/>
+<meta property="og:image" content="/img/white.jpg"/>
 <meta property="article:published_time" content="2020-06-14T00:00:00+00:00" />
 <meta property="article:modified_time" content="2020-06-14T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="/img/og.png"/>
+<meta name="twitter:image" content="/img/white.jpg"/>
 
 <meta name="twitter:title" content="Using Nonparametric Methods to Investigate the Opioid Crisis in Connecticut"/>
 <meta name="twitter:description" content="
@@ -77,7 +77,7 @@ This is the first in a series of articles dealing with the current Opioid Epidem
 
 
 
-<link rel="stylesheet" href="/assets/css/fuji.min.css" />
+<link rel="stylesheet" href="../../assets/css/fuji.min.css" />
 
 
 
@@ -103,7 +103,7 @@ This is the first in a series of articles dealing with the current Opioid Epidem
     <header>
     <div class="container-lg clearfix">
         <div class="col-12 header">
-            <a class="title-main" href="/">Jason Risdana</a>
+            <a class="title-main" href="../../">Jason Risdana</a>
             
             <span class="title-sub">Personal website</span>
             
@@ -119,10 +119,10 @@ This is the first in a series of articles dealing with the current Opioid Epidem
 <article>
     
     <h2 class="post-item post-title">
-        <a href="/post/2020_14_6_opioid_nonparam/">Using Nonparametric Methods to Investigate the Opioid Crisis in Connecticut</a>
+        <a href="../../post/2020_14_6_opioid_nonparam/">Using Nonparametric Methods to Investigate the Opioid Crisis in Connecticut</a>
     </h2>
     <div class="post-item post-meta">
-        <span><i class="iconfont icon-today-sharp"></i>&nbsp;2020-06-14</span><span><i class="iconfont icon-time-sharp"></i>&nbsp;13 minutes</span><span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href="/tags/opioid">opioid</a>&nbsp;<a href="/tags/logistic">logistic</a>&nbsp;<a href="/tags/nonparametric">nonparametric</a>&nbsp;</span>
+        <span><i class="iconfont icon-today-sharp"></i>&nbsp;2020-06-14</span><span><i class="iconfont icon-time-sharp"></i>&nbsp;13 minutes</span><span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;<a href="../../tags/opioid">opioid</a>&nbsp;<a href="../../tags/logistic">logistic</a>&nbsp;<a href="../../tags/nonparametric">nonparametric</a>&nbsp;</span>
 
     </div>
     
@@ -192,7 +192,7 @@ where <span class="math inline">\(p_{-i}\)</span> denotes the kernel density est
 <br><br>
 This idea applies to a wide range of methods, including multivariate density estimation and kernel estimation of a regression function. However, it is known to be more likely to result in poor choices. This is possibly because the method requires numerical minimization of an objective function, which can be a challenging computational problem depending on the shape of the objective function. A more complex objective function can cause overfitting.<br />
 <br><br>
-<img src="/post/2020_14_6_opioid_nonparam_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" />
+<img src="../../post/2020_14_6_opioid_nonparam_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" />
 <br><br>
 Regardless of bandwidth selectors, each density estimate indicated a rise in deaths per day from 2012-2018.</p>
 Since we know there was a surge in Synthetic opioids and a significant increase in overall deaths, we should look at Fentanyl deaths during this period.
@@ -287,7 +287,7 @@ Unfortunately, there’s not much data to back up our claims of nonlinear growth
 <br><br></p>
 <pre><code>## Test of linear model:  significance =  0</code></pre>
 <pre><code>## Test of linear model:  significance =  0</code></pre>
-<img src="/post/2020_14_6_opioid_nonparam_files/figure-html/monthly-1.png" width="672" />
+<img src="../../post/2020_14_6_opioid_nonparam_files/figure-html/monthly-1.png" width="672" />
 <table>
 <tr>
 <th>
@@ -363,7 +363,7 @@ head(fentrate.ym.ful)</code></pre>
 ## 6 2012-06 2   6 1.10</code></pre>
 <p>Great - now, let’s see how that turned out.</p>
 <pre class="r"><code>np.fent.full.log &lt;- sm.regression(ind, logx, data=fentrate.ym.ful, col=&quot;green&quot;, pch=19, xlab = &quot;Number of Months&quot;, ylab = &quot;Log Deaths&quot;, model=&quot;linear&quot;)</code></pre>
-<p><img src="/post/2020_14_6_opioid_nonparam_files/figure-html/plot-1.png" width="672" /></p>
+<p><img src="../../post/2020_14_6_opioid_nonparam_files/figure-html/plot-1.png" width="672" /></p>
 <pre><code>## Test of linear model:  significance =  0</code></pre>
 <p>We can rule out that Deaths over Time follows exponential growth. A log transformation linearizes exponential data. We don’t have a linear relationship between the Log of Deaths and the number of months. In fact, the log-deaths model suggests that the growth in the number of deaths is slowing down.
 <br><br>
@@ -403,7 +403,7 @@ The <strong>SSlogis</strong> function fits a slightly different parameterization
 where <span class="math inline">\(Asym = K, xmid = \frac{-P_o}{r}, scal = \frac{-1}{r}\)</span>.
 <br><br>
 However, everything means the same thing. <span class="math inline">\(Asym\)</span> is where the number of deaths plateau, <span class="math inline">\(xmid\)</span> is the x value at the inflection point of the logistic curve and <span class="math inline">\(scal\)</span> is how quickly the number of deaths approaches the asymptote.
-<img src="/post/2020_14_6_opioid_nonparam_files/figure-html/nec-1.png" width="672" /></p>
+<img src="../../post/2020_14_6_opioid_nonparam_files/figure-html/nec-1.png" width="672" /></p>
 <pre><code>## 
 ## Formula: x ~ SSlogis(ind, Asym, xmid, scal)
 ## 
@@ -440,7 +440,7 @@ Let’s look at the residuals:</p>
 <p>The errors are normally distributed. That’s good, but does this model make sense?
 <br><br>
 Let’s try to fit a logistic function on the proportion of deaths over time.
-<img src="/post/2020_14_6_opioid_nonparam_files/figure-html/nmeg-1.png" width="672" /></p>
+<img src="../../post/2020_14_6_opioid_nonparam_files/figure-html/nmeg-1.png" width="672" /></p>
 <pre><code>## 
 ## Formula: prop ~ SSlogis(ind, Asym, xmid, scal)
 ## 
@@ -506,23 +506,23 @@ We didn’t do much Exploratory Data Analysis at all, so let’s revisit these g
         <ul>
             
             <li>
-                <a href="/">Home</a>
+                <a href="../../">Home</a>
             </li>
             
             <li>
-                <a href="/about/">About</a>
+                <a href="../../about/">About</a>
             </li>
             
             <li>
-                <a href="/resume/">Resume</a>
+                <a href="../../resume/">Resume</a>
             </li>
             
             <li>
-                <a href="/archives/">Archives</a>
+                <a href="../../archives/">Archives</a>
             </li>
             
             <li>
-                <a href="/search/">Search</a>
+                <a href="../../search/">Search</a>
             </li>
             
         </ul>
@@ -556,31 +556,31 @@ We didn’t do much Exploratory Data Analysis at all, so let’s revisit these g
         <div>
             
             <span>
-                <a href="/tags/causal_inference/">causal_inference</a>
+                <a href="../../tags/causal_inference/">causal_inference</a>
             </span>
             
             <span>
-                <a href="/tags/covid/">covid</a>
+                <a href="../../tags/covid/">covid</a>
             </span>
             
             <span>
-                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+                <a href="../../tags/diff_in_diff/">diff_in_diff</a>
             </span>
             
             <span>
-                <a href="/tags/eda/">eda</a>
+                <a href="../../tags/eda/">eda</a>
             </span>
             
             <span>
-                <a href="/tags/logistic/">logistic</a>
+                <a href="../../tags/logistic/">logistic</a>
             </span>
             
             <span>
-                <a href="/tags/nonparametric/">nonparametric</a>
+                <a href="../../tags/nonparametric/">nonparametric</a>
             </span>
             
             <span>
-                <a href="/tags/opioid/">opioid</a>
+                <a href="../../tags/opioid/">opioid</a>
             </span>
             
         </div>
@@ -610,23 +610,23 @@ We didn’t do much Exploratory Data Analysis at all, so let’s revisit these g
         <ul>
             
             <li>
-                <a href="/">Home</a>
+                <a href="../../">Home</a>
             </li>
             
             <li>
-                <a href="/about/">About</a>
+                <a href="../../about/">About</a>
             </li>
             
             <li>
-                <a href="/resume/">Resume</a>
+                <a href="../../resume/">Resume</a>
             </li>
             
             <li>
-                <a href="/archives/">Archives</a>
+                <a href="../../archives/">Archives</a>
             </li>
             
             <li>
-                <a href="/search/">Search</a>
+                <a href="../../search/">Search</a>
             </li>
             
         </ul>
@@ -660,31 +660,31 @@ We didn’t do much Exploratory Data Analysis at all, so let’s revisit these g
         <div>
             
             <span>
-                <a href="/tags/causal_inference/">causal_inference</a>
+                <a href="../../tags/causal_inference/">causal_inference</a>
             </span>
             
             <span>
-                <a href="/tags/covid/">covid</a>
+                <a href="../../tags/covid/">covid</a>
             </span>
             
             <span>
-                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+                <a href="../../tags/diff_in_diff/">diff_in_diff</a>
             </span>
             
             <span>
-                <a href="/tags/eda/">eda</a>
+                <a href="../../tags/eda/">eda</a>
             </span>
             
             <span>
-                <a href="/tags/logistic/">logistic</a>
+                <a href="../../tags/logistic/">logistic</a>
             </span>
             
             <span>
-                <a href="/tags/nonparametric/">nonparametric</a>
+                <a href="../../tags/nonparametric/">nonparametric</a>
             </span>
             
             <span>
-                <a href="/tags/opioid/">opioid</a>
+                <a href="../../tags/opioid/">opioid</a>
             </span>
             
         </div>
@@ -702,7 +702,7 @@ We didn’t do much Exploratory Data Analysis at all, so let’s revisit these g
         <div class="col-12 footer">
             
             <span>&copy; 2020-2020
-                <a href="/">Jason Risdana</a>
+                <a href="../../">Jason Risdana</a>
                 
                 | Powered by <a href="https://github.com/amzrk2/hugo-theme-fuji/"
                    target="_blank">Fuji-v2</a> &amp; <a href="https://gohugo.io/"
@@ -719,7 +719,7 @@ We didn’t do much Exploratory Data Analysis at all, so let’s revisit these g
 
 
 
-<script defer src="/assets/js/fuji.min.js"></script>
+<script defer src="../../assets/js/fuji.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>

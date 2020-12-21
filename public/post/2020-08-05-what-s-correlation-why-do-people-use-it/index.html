@@ -42,12 +42,12 @@ Correlation analysis is frequently used in scientific reports, but what is corre
 " />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/2020-08-05-what-s-correlation-why-do-people-use-it/" />
-<meta property="og:image" content="/img/og.png"/>
+<meta property="og:image" content="/img/white.jpg"/>
 <meta property="article:published_time" content="2020-08-05T00:00:00+00:00" />
 <meta property="article:modified_time" content="2020-08-05T00:00:00+00:00" />
 
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="/img/og.png"/>
+<meta name="twitter:image" content="/img/white.jpg"/>
 
 <meta name="twitter:title" content="What&#39;s Correlation? Why do people use it? "/>
 <meta name="twitter:description" content="
@@ -75,7 +75,7 @@ Correlation analysis is frequently used in scientific reports, but what is corre
 
 
 
-<link rel="stylesheet" href="/assets/css/fuji.min.css" />
+<link rel="stylesheet" href="../../assets/css/fuji.min.css" />
 
 
 
@@ -101,7 +101,7 @@ Correlation analysis is frequently used in scientific reports, but what is corre
     <header>
     <div class="container-lg clearfix">
         <div class="col-12 header">
-            <a class="title-main" href="/">Jason Risdana</a>
+            <a class="title-main" href="../../">Jason Risdana</a>
             
             <span class="title-sub">Personal website</span>
             
@@ -117,7 +117,7 @@ Correlation analysis is frequently used in scientific reports, but what is corre
 <article>
     
     <h2 class="post-item post-title">
-        <a href="/post/2020-08-05-what-s-correlation-why-do-people-use-it/">What&#39;s Correlation? Why do people use it? </a>
+        <a href="../../post/2020-08-05-what-s-correlation-why-do-people-use-it/">What&#39;s Correlation? Why do people use it? </a>
     </h2>
     <div class="post-item post-meta">
         <span><i class="iconfont icon-today-sharp"></i>&nbsp;2020-08-05</span><span><i class="iconfont icon-time-sharp"></i>&nbsp;13 minutes</span><span><i class="iconfont icon-pricetags-sharp"></i>&nbsp;No tag</span>
@@ -157,7 +157,7 @@ Let’s look at the Covariance formula for more information:
 Covariance measures <em>the average change between two variables</em>. A <strong>positive</strong> covariance means that the positive values of <span class="math inline">\(X\)</span> correspond with the positive values of <span class="math inline">\(Y\)</span> on average. Likewise, the negative values of <span class="math inline">\(X\)</span> correspond to the negative values of <span class="math inline">\(Y\)</span> on average. As one variable increases, the other also increases on average.
 <br><br>
 For intuition, let’s look at a graph. The <a href="https://cran.r-project.org/web/packages/Ecdat/Ecdat.pdf" target="_blank"><kbd><strong>Ecdat</strong></kbd></a> package provides data sets for econometrics.
-<img src="/post/2020-08-05-what-s-correlation-why-do-people-use-it_files/figure-html/graph-1.png" width="672" /></p></li>
+<img src="../../post/2020-08-05-what-s-correlation-why-do-people-use-it_files/figure-html/graph-1.png" width="672" /></p></li>
 </ul>
 <p>The relationship between Bid Price and Ask Price has a positive covariance. <span class="math inline">\(E[X]\)</span> is the blue vertical line and <span class="math inline">\(E[Y]\)</span> is the red horizontal line. When <span class="math inline">\(X\)</span> (Ask price) is less than <span class="math inline">\(E[X]\)</span> (mean of Ask price), or left of the blue line, <span class="math inline">\(Y\)</span> (Bid price) is also less than <span class="math inline">\(E[Y]\)</span> (Mean of bid price). Thus, <span class="math inline">\(X - E[X]\)</span> and <span class="math inline">\(Y-E[Y]\)</span> are both negative when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are less than their means. The product of these differences is positive. <span class="math inline">\(X - E[X]\)</span> and <span class="math inline">\(Y - E[Y]\)</span> are both positive when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are greater than their means. The product of these differences are also positive. Thus, the average of the variable’s differences, or the Covariance, is always positive.</p>
 <p>A negative covariance means that as one variable increases, the other decreases on average. The product of the average <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> differences from their means will be negative. A near zero covariance means that the variables do not fluctuate together proportionally or inversely on average. Covariance is only effective when the relationships are proportional or inversely proportional - meaning <strong>we can only detect linear relationships.</strong>
@@ -230,7 +230,7 @@ g &lt;- ggplot(df, aes(x,y)) +
   geom_smooth(method=&quot;lm&quot;, se=FALSE)
 g</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="/post/2020-08-05-what-s-correlation-why-do-people-use-it_files/figure-html/exp-1.png" width="672" />
+<p><img src="../../post/2020-08-05-what-s-correlation-why-do-people-use-it_files/figure-html/exp-1.png" width="672" />
 Let’s use the Pearson correlation coefficient formula to find the strength of linear relationship.</p>
 <pre class="r"><code>cov(x,y)/(sd(x)*sd(y))</code></pre>
 <pre><code>## [1] 0.56</code></pre>
@@ -559,23 +559,23 @@ This is quite a departure from Pearson and Spearman correlation.</p>
         <ul>
             
             <li>
-                <a href="/">Home</a>
+                <a href="../../">Home</a>
             </li>
             
             <li>
-                <a href="/about/">About</a>
+                <a href="../../about/">About</a>
             </li>
             
             <li>
-                <a href="/resume/">Resume</a>
+                <a href="../../resume/">Resume</a>
             </li>
             
             <li>
-                <a href="/archives/">Archives</a>
+                <a href="../../archives/">Archives</a>
             </li>
             
             <li>
-                <a href="/search/">Search</a>
+                <a href="../../search/">Search</a>
             </li>
             
         </ul>
@@ -609,31 +609,31 @@ This is quite a departure from Pearson and Spearman correlation.</p>
         <div>
             
             <span>
-                <a href="/tags/causal_inference/">causal_inference</a>
+                <a href="../../tags/causal_inference/">causal_inference</a>
             </span>
             
             <span>
-                <a href="/tags/covid/">covid</a>
+                <a href="../../tags/covid/">covid</a>
             </span>
             
             <span>
-                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+                <a href="../../tags/diff_in_diff/">diff_in_diff</a>
             </span>
             
             <span>
-                <a href="/tags/eda/">eda</a>
+                <a href="../../tags/eda/">eda</a>
             </span>
             
             <span>
-                <a href="/tags/logistic/">logistic</a>
+                <a href="../../tags/logistic/">logistic</a>
             </span>
             
             <span>
-                <a href="/tags/nonparametric/">nonparametric</a>
+                <a href="../../tags/nonparametric/">nonparametric</a>
             </span>
             
             <span>
-                <a href="/tags/opioid/">opioid</a>
+                <a href="../../tags/opioid/">opioid</a>
             </span>
             
         </div>
@@ -663,23 +663,23 @@ This is quite a departure from Pearson and Spearman correlation.</p>
         <ul>
             
             <li>
-                <a href="/">Home</a>
+                <a href="../../">Home</a>
             </li>
             
             <li>
-                <a href="/about/">About</a>
+                <a href="../../about/">About</a>
             </li>
             
             <li>
-                <a href="/resume/">Resume</a>
+                <a href="../../resume/">Resume</a>
             </li>
             
             <li>
-                <a href="/archives/">Archives</a>
+                <a href="../../archives/">Archives</a>
             </li>
             
             <li>
-                <a href="/search/">Search</a>
+                <a href="../../search/">Search</a>
             </li>
             
         </ul>
@@ -713,31 +713,31 @@ This is quite a departure from Pearson and Spearman correlation.</p>
         <div>
             
             <span>
-                <a href="/tags/causal_inference/">causal_inference</a>
+                <a href="../../tags/causal_inference/">causal_inference</a>
             </span>
             
             <span>
-                <a href="/tags/covid/">covid</a>
+                <a href="../../tags/covid/">covid</a>
             </span>
             
             <span>
-                <a href="/tags/diff_in_diff/">diff_in_diff</a>
+                <a href="../../tags/diff_in_diff/">diff_in_diff</a>
             </span>
             
             <span>
-                <a href="/tags/eda/">eda</a>
+                <a href="../../tags/eda/">eda</a>
             </span>
             
             <span>
-                <a href="/tags/logistic/">logistic</a>
+                <a href="../../tags/logistic/">logistic</a>
             </span>
             
             <span>
-                <a href="/tags/nonparametric/">nonparametric</a>
+                <a href="../../tags/nonparametric/">nonparametric</a>
             </span>
             
             <span>
-                <a href="/tags/opioid/">opioid</a>
+                <a href="../../tags/opioid/">opioid</a>
             </span>
             
         </div>
@@ -755,7 +755,7 @@ This is quite a departure from Pearson and Spearman correlation.</p>
         <div class="col-12 footer">
             
             <span>&copy; 2020-2020
-                <a href="/">Jason Risdana</a>
+                <a href="../../">Jason Risdana</a>
                 
                 | Powered by <a href="https://github.com/amzrk2/hugo-theme-fuji/"
                    target="_blank">Fuji-v2</a> &amp; <a href="https://gohugo.io/"
@@ -772,7 +772,7 @@ This is quite a departure from Pearson and Spearman correlation.</p>
 
 
 
-<script defer src="/assets/js/fuji.min.js"></script>
+<script defer src="../../assets/js/fuji.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js"></script>
