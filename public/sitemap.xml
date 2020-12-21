@@ -3,85 +3,85 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://jrisdana.com/</loc>
+    <loc>/</loc>
     <lastmod>2020-08-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/post/</loc>
+    <loc>/post/</loc>
     <lastmod>2020-08-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/post/2020-08-05-what-s-correlation-why-do-people-use-it/</loc>
+    <loc>/post/2020-08-05-what-s-correlation-why-do-people-use-it/</loc>
     <lastmod>2020-08-05T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/about/</loc>
+    <loc>/about/</loc>
     <lastmod>2020-07-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/tags/causal_inference/</loc>
+    <loc>/tags/causal_inference/</loc>
     <lastmod>2020-07-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/tags/covid/</loc>
+    <loc>/tags/covid/</loc>
     <lastmod>2020-07-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/tags/diff_in_diff/</loc>
+    <loc>/tags/diff_in_diff/</loc>
     <lastmod>2020-07-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/tags/eda/</loc>
+    <loc>/tags/eda/</loc>
     <lastmod>2020-07-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</loc>
+    <loc>/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</loc>
     <lastmod>2020-07-24T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/tags/logistic/</loc>
+    <loc>/tags/logistic/</loc>
     <lastmod>2020-06-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/tags/nonparametric/</loc>
+    <loc>/tags/nonparametric/</loc>
     <lastmod>2020-06-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/tags/opioid/</loc>
+    <loc>/tags/opioid/</loc>
     <lastmod>2020-06-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/post/2020_14_6_opioid_nonparam/</loc>
+    <loc>/post/2020_14_6_opioid_nonparam/</loc>
     <lastmod>2020-06-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/post/first_post/</loc>
+    <loc>/post/first_post/</loc>
     <lastmod>2020-05-20T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/archives/</loc>
+    <loc>/archives/</loc>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/resume/</loc>
+    <loc>/resume/</loc>
   </url>
   
   <url>
-    <loc>https://jrisdana.com/search/</loc>
+    <loc>/search/</loc>
   </url>
   
 </urlset>

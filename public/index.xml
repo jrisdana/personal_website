@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Jason Risdana</title>
-    <link>https://jrisdana.com/</link>
+    <link>/</link>
     <description>Recent content on Jason Risdana</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://jrisdana.com/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>What&#39;s Correlation? Why do people use it? </title>
-      <link>https://jrisdana.com/post/2020-08-05-what-s-correlation-why-do-people-use-it/</link>
+      <link>/post/2020-08-05-what-s-correlation-why-do-people-use-it/</link>
       <pubDate>Wed, 05 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://jrisdana.com/post/2020-08-05-what-s-correlation-why-do-people-use-it/</guid>
+      <guid>/post/2020-08-05-what-s-correlation-why-do-people-use-it/</guid>
       <description>
-&lt;script src=&#34;https://jrisdana.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://jrisdana.com/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://jrisdana.com/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 
 &lt;p&gt;Correlation analysis is frequently used in scientific reports, but what is correlation? Why is it misused so often? In this article, I will define correlation, its uses and limitations. I’ll look at a couple of misconceptions about Pearson correlation analysis and alternative correlation measures.
@@ -25,21 +25,21 @@
     
     <item>
       <title>About</title>
-      <link>https://jrisdana.com/about/</link>
+      <link>/about/</link>
       <pubDate>Tue, 28 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://jrisdana.com/about/</guid>
+      <guid>/about/</guid>
       <description>Hello!Hope you like my page so far. I recently completed my Bachelor’s at Northwestern University in Statistics and Economics. I am interested in interdisciplinary research and statistics/data-science related opportunities. I’m also interested in practicing data analysis and learning more about what I can do with and discover from data.After graduating from an arts high school, I came to Northwestern interested in Voice and History. I soon realized my love for Statistics and the ability to use Mathematics to learn more about our world. Be sure to look at my Posts and Resume if you’re interested in my skillset.</description>
     </item>
     
     <item>
       <title>Masks and COVID in Orange County vs. San Diego</title>
-      <link>https://jrisdana.com/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</link>
+      <link>/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</link>
       <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://jrisdana.com/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</guid>
+      <guid>/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</guid>
       <description>
-&lt;script src=&#34;https://jrisdana.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;“Do mask requirement mandates aﬀect the growth of COVID cases in an area?”
@@ -50,14 +50,14 @@ I speculate the causality of this claim by analyzing Orange County and San Diego
     
     <item>
       <title>Using Nonparametric Methods to Investigate the Opioid Crisis in Connecticut</title>
-      <link>https://jrisdana.com/post/2020_14_6_opioid_nonparam/</link>
+      <link>/post/2020_14_6_opioid_nonparam/</link>
       <pubDate>Sun, 14 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://jrisdana.com/post/2020_14_6_opioid_nonparam/</guid>
+      <guid>/post/2020_14_6_opioid_nonparam/</guid>
       <description>
-&lt;script src=&#34;https://jrisdana.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;https://jrisdana.com/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://jrisdana.com/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
 
 
 &lt;p&gt;This is the first in a series of articles dealing with the current Opioid Epidemic. I explore the relationship between Fentanyl and drug-related deaths using kernel density estimation and nonparametric regression, before fitting the regression to a distribution.
@@ -66,12 +66,12 @@ I speculate the causality of this claim by analyzing Orange County and San Diego
     
     <item>
       <title>Hello!</title>
-      <link>https://jrisdana.com/post/first_post/</link>
+      <link>/post/first_post/</link>
       <pubDate>Wed, 20 May 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://jrisdana.com/post/first_post/</guid>
+      <guid>/post/first_post/</guid>
       <description>
-&lt;script src=&#34;https://jrisdana.com/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Welcome to my website! Glad you’re here.
@@ -80,10 +80,10 @@ I speculate the causality of this claim by analyzing Orange County and San Diego
     
     <item>
       <title>Resume</title>
-      <link>https://jrisdana.com/resume/</link>
+      <link>/resume/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://jrisdana.com/resume/</guid>
+      <guid>/resume/</guid>
       <description>For my resume in PDF format and additional information, click here.
 SummaryI’m a highly motivated person interested in Statistics and its applications to social welfare and technology. I spend the majority of my time working on independent data science and statistics projects. I’m methodical and care about my work to the most minute detail. I’m motivated by both a passion for learning and an understanding that better technology can make our world a more equal and just place.
 EducationNorthwestern University

@@ -1,4 +1,5 @@
 baseURL = "/"
+relativeurls = true
 title = "Jason Risdana"
 
 theme = "hugo-theme-fuji"
