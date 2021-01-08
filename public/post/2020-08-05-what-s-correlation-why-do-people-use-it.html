@@ -4,7 +4,7 @@ author: "Jason Risdana"
 date: '2020-08-05'
 slug: correlation
 categories: []
-tags: []
+tags: [correlation]
 math: yes
 ---
 
@@ -15,29 +15,29 @@ math: yes
 
 <p>Correlation analysis is frequently used in scientific reports, but what is correlation? Why is it misused so often? In this article, I will define correlation, its uses and limitations. I’ll look at a couple of misconceptions about Pearson correlation analysis and alternative correlation measures.
 <!--more-->
-Correlation is everywhere in scientific analysis, but what does it mean when variables are “correlated”? What does correlation mean anyway?
+Correlation techniques are used plenty in scientific analysis, but what does it mean when variables are “correlated”?
 <br><br>
-<a href="https://www.americanscientist.org/article/what-everyone-should-know-about-statistical-correlation" target="_blank">This article</a> addresses common misconceptions about correlation and their consequences in academia and beyond. I’ve struggled with some of these misconceptions, so I thought it would be best to define correlation and explain how to use it.</p>
+<a href="https://www.americanscientist.org/article/what-everyone-should-know-about-statistical-correlation" target="_blank">The linked article</a> addresses common misconceptions about correlation in academia and beyond. I’ve struggled with some of these misconceptions, so I thought it would be best to define correlation and explain how to use it.</p>
 <div id="defining-correlation" class="section level2">
 <h2>Defining Correlation</h2>
-<p>When doing a quick Google search on Correlation, the first definition is:</p>
+<p>If you google “Correlation”, the first definition that pops up is:</p>
 <p align="center">
 “a mutual relationship or connection between two or more things”
 </p>
-<p>In fact, <em>most</em> websites define correlation as a “technique that shows how strongly pairs of variables are related”. I think it’s safe to define Correlation as <strong>the association between two variables.</strong> However, the most popular correlation measure, the <strong>Pearson Correlation</strong>, has a very different definition.
+<p><em>Most</em> websites define statistical correlation as a “technique that shows how strongly pairs of variables are related”. We could say that a measure of correlation gives us <strong>the measure of association between two variables.</strong> However, the most popular correlation measure, the <strong>Pearson Correlation</strong>, has a very different definition.
 <br><br>
-Pearson correlation is often confused with the general definition of correlation.</p>
+Herein lies one of correlation’s biggest misconceptions: The conflation of Pearson correlation with the general definition of correlation. In short, people sometimes mix up the two.</p>
 </div>
 <div id="pearson-correlation" class="section level2">
 <h2>Pearson Correlation</h2>
-<p><strong>Pearson Correlation</strong> measures the strength of a linear relationship between variables/features. The measurement is expressed as the <strong>Pearson Correlation Coefficient</strong>, which ranges in value from -1 to +1. The closer the magnitude is to 1, the stronger the linear relationship.</p>
+<p><strong>Pearson Correlation</strong> measures the strength of a linear relationship between variables/features. The measurement is expressed as the <strong>Pearson Correlation Coefficient</strong>, which ranges in value from -1 to +1. The closer the coefficient’s absolute value is to 1, the stronger the linear relationship.</p>
 <div id="how-does-it-work" class="section level3">
 <h3>How does it work?</h3>
-<p>Let’s look at the formula for the population correation coefficient to understand how it’s measured:
+<p>Let’s look at the formula for the population correlation coefficient to understand how it’s measured:
 <span class="math display">\[ corr_{xy} = \frac{Cov(X, Y)}{\sigma_x \sigma_y}\]</span>
-I used the population correlation coefficient instead of the sample correlation coefficient because I wanted to better highlight its relationship with other statistical concepts. Let’s define some of the variables and measures in this formula:</p>
+I used the population correlation coefficient instead of the sample correlation coefficient to better highlight its relationship with other statistical concepts. Let’s define some of the variables and measures in this formula:</p>
 <ul>
-<li><p><span class="math inline">\(X, Y\)</span> are random variables - <strong>or a set of numbers that are outcomes of a random phenomenon.</strong> These variables come from some sort of probability distribution. The Pearson Correlation assumes these variables come from a Normal distribution. That is, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are assumed to have values symmetric about the mean, and more values close to the mean than far from the mean. This creates a Bell curve, with the height of the curve being at the mean.</p></li>
+<li><p><span class="math inline">\(X, Y\)</span> are random variables - <strong>or a set of numbers that are outcomes of a random phenomenon.</strong> These variables come from some sort of probability distribution. The Pearson Correlation assumes these variables come from a Normal distribution. That is, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are assumed to have values symmetric about the mean, and more values close to the mean than far from the mean. This creates a bell curve, with the height of the curve being at the mean.</p></li>
 <li><p><span class="math inline">\(\sigma_x, \sigma_y\)</span> are the standard deviations of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. That is, <strong>the measure of how far apart values are relative to its mean</strong>. This is called spread.</p></li>
 <li><p><span class="math inline">\(Cov(X, Y)\)</span> is the covariance of the two random variables. Covariance is <strong>the measure of how much one variable changes relative to another</strong>.
 <br><br>
@@ -48,14 +48,14 @@ Covariance measures <em>the average change between two variables</em>. A <strong
 For intuition, let’s look at a graph. The <a href="https://cran.r-project.org/web/packages/Ecdat/Ecdat.pdf" target="_blank"><kbd><strong>Ecdat</strong></kbd></a> package provides data sets for econometrics.
 <img src="public/post/2020-08-05-what-s-correlation-why-do-people-use-it_files/figure-html/graph-1.png" width="672" /></p></li>
 </ul>
-<p>The relationship between Bid Price and Ask Price has a positive covariance. <span class="math inline">\(E[X]\)</span> is the blue vertical line and <span class="math inline">\(E[Y]\)</span> is the red horizontal line. When <span class="math inline">\(X\)</span> (Ask price) is less than <span class="math inline">\(E[X]\)</span> (mean of Ask price), or left of the blue line, <span class="math inline">\(Y\)</span> (Bid price) is also less than <span class="math inline">\(E[Y]\)</span> (Mean of bid price). Thus, <span class="math inline">\(X - E[X]\)</span> and <span class="math inline">\(Y-E[Y]\)</span> are both negative when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are less than their means. The product of these differences is positive. <span class="math inline">\(X - E[X]\)</span> and <span class="math inline">\(Y - E[Y]\)</span> are both positive when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are greater than their means. The product of these differences are also positive. Thus, the average of the variable’s differences, or the Covariance, is always positive.</p>
+<p>The relationship between Bid Price and Ask Price has a positive covariance. <span class="math inline">\(E[X]\)</span> is the blue vertical line and <span class="math inline">\(E[Y]\)</span> is the red horizontal line. When <span class="math inline">\(X\)</span> (Ask price) is less than <span class="math inline">\(E[X]\)</span> (mean of Ask price), or left of the blue line, <span class="math inline">\(Y\)</span> (Bid price) is also less than <span class="math inline">\(E[Y]\)</span> (Mean of bid price). Thus, <span class="math inline">\(X - E[X]\)</span> and <span class="math inline">\(Y-E[Y]\)</span> are both negative when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are less than their means. The product of the two negative differences is positive. <span class="math inline">\(X - E[X]\)</span> and <span class="math inline">\(Y - E[Y]\)</span> are both positive when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are greater than their means. The product of these differences are also positive. For a proportional relationship, the average of the variable’s differences, or the Covariance, is always positive.</p>
 <p>A negative covariance means that as one variable increases, the other decreases on average. The product of the average <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> differences from their means will be negative. A near zero covariance means that the variables do not fluctuate together proportionally or inversely on average. Covariance is only effective when the relationships are proportional or inversely proportional - meaning <strong>we can only detect linear relationships.</strong>
 <br><br>
 While covariance can tell us whether variables have a positive or negative linear relationship, it doesn’t give us reliable information on the relationship’s strength.</p>
 <blockquote>
 <p>By <strong>Strength</strong>, we mean how close the two variables follow a straight line.</p>
 </blockquote>
-<p>Covariance is measured in the units of the selected variables. If we’re measuring something in feet, find the covariance, and convert feet to meters, the magnitude (size) of the covariance changes. Since the size of the covariance is affected by the size of the units, the strength of a linear relationship remains unclaer.</p>
+<p>Covariance is measured in the units of the selected variables. If we’re measuring something in feet, find the covariance, and convert feet to meters, the magnitude (size) of the covariance changes. Since the size of the covariance is affected by the size of the units, the strength of a linear relationship is unclear.</p>
 <p>The correlation formula “normalizes” the covariance formula, meaning that it gets rid of the units and scales the measure from [0,1]. This is done by dividing the Covariance by the product of standard deviations, <span class="math inline">\(\sigma_x \sigma_y\)</span>, of each variable. To better understand this, let’s look at the correlation formula again in terms of expectations:
 <span class="math display">\[ Cor(X,Y) = \frac{E(X-E[X])(Y-E[Y])}{\sqrt{(E(X-E[X])^2)\cdot(E(Y-E[Y])^2)}}\]</span>
 This is messy, but it illustrates this: What if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> changed at a constant proportion at all data points? That is,
@@ -67,7 +67,7 @@ If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</s
 </div>
 <div id="cauchy-schwarz-inequality" class="section level3">
 <h3>Cauchy-Schwarz Inequality</h3>
-<p>The Cauchy-Schwarz Inequality is a very useful inequality that says that, if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are random variables and <span class="math inline">\(E(XY)\)</span> exists,
+<p>The Cauchy-Schwarz Inequality says that, if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are random variables and <span class="math inline">\(E(XY)\)</span> exists,
 <span class="math display">\[E(XY)^2 \leq E(X^2)E(Y^2)\]</span>
 Since <span class="math inline">\(X\)</span> can be any random variable, we can set <span class="math inline">\(X\)</span> to be <span class="math inline">\(X - E[X]\)</span> and <span class="math inline">\(Y\)</span> to be <span class="math inline">\(Y - E[Y]\)</span>. According to Cauchy-Schwarz inequality,
 <span class="math display">\[E[(X-E[X]))(Y-E[Y])]^2 \leq E((X-E[X])^2)E((Y-E[Y])^2)\]</span>
@@ -86,20 +86,18 @@ We know that covariance can either be positive or negative, so we know that
 </div>
 <div id="why-did-i-talk-about-this" class="section level2">
 <h2>Why did I talk about this?</h2>
-<p>The article <em>only</em> talks about misuses of Pearson correlation.
+<p>A huge misconception from the linked article is that <em>a correlation coefficient of zero implies independence</em>. While independent random variables are uncorrelated, the converse is not true.
 <br><br>
-<strong>For example</strong>, one misconception from Dr. Velickovic’s article is that <em>a correlation coefficient of zero implies independence</em>. While independent random variables are uncorrelated, the converse is not true.
+Pearson correlation is only valid for detecting linear relationships between variables. Nonlinear relationships, like parabolas, could yield a zero correlation coefficient. While the correlation may be zero, there does exist a relationship between random variables.
 <br><br>
-Additionally, Pearson correlation is only valid for detecting linear relationships between variables. Nonlinear relationships, like parabolas, could yield a zero correlation coefficient. While the correlation may be zero, there does exist a relationship between random variables.
+By going through its formula, I wanted to show how <strong>Pearson correlation is rooted in linearity</strong>, and why it cannot detect nonlinear relationships.
 <br><br>
-<strong>Pearson correlation is rooted in linearity</strong>, and it cannot detect nonlinear relationships.
-<br><br>
-So what else can we use? If we want to evaluate the relationship between two variables, but can’t assume that our data is linear, what can we use?</p>
+So, what else can we use? If we want to evaluate relationships between features, but can’t assume that our data is normal and the relationships are linear, what do we do?</p>
 <div id="spearmans-correlation" class="section level3">
 <h3>Spearman’s Correlation</h3>
-<p>Spearman’s correlation measure cannot detect nonmonotonic relationships, so something like a parabola, where variables move positively and negatively together, would still yield a zero correlation coefficient.</p>
+<p>Spearman’s correlation measure cannot detect nonmonotonic relationships, so something like the aforementioned parabola would still yield a zero correlation coefficient.</p>
 <blockquote>
-<p>NOTE: There is a correlation measure that can detect nonlinear relationships and independence - <strong>Distance Correlation</strong>. A Distance correlation of zero implies independence. However, I want to write about Similarity and Distance first before writing about Distance Correlation. I’ll link that article here once it’s published.</p>
+<p>NOTE: There is a correlation measure that can detect nonlinear relationships and independence - <strong>Distance Correlation</strong>. A Distance correlation of zero implies independence. However, I want to write about Similarity and Distance first before writing about Distance Correlation.</p>
 </blockquote>
 <p><strong>However</strong>, Spearman’s Correlation can detect nonlinear monotonic relationships - think exponential, logistic curves, etc. It is a <strong>nonparametric</strong> measure of correlation, meaning that it doesn’t assume the data comes from a known distribution. To understand the significance of this, let’s look at the assumptions made using Pearson’s correlation:</p>
 <ul>
@@ -108,7 +106,7 @@ So what else can we use? If we want to evaluate the relationship between two var
 <li><p>The spread of data points is the same in both random variables (homoscedasticity)</p></li>
 </ul>
 <p>These are some restrictive assumptions - we can only use continuous data with constant variance. Parametric data is great for powerful results, but real-world data usually violates at least one of these assumptions.</p>
-<p>Let’s look at an exponential scatterplot and see how both Pearson and Spearman correlation performs.</p>
+<p>Let’s look at an exponential scatterplot and see how both Pearson and Spearman’s correlation performs.</p>
 <pre class="r"><code>x &lt;- c(1,2,3,4,5,6,7,8,9, 10,
        11,12,13,14,15,16,17,18)
 y &lt;- exp(x)
@@ -123,7 +121,7 @@ g</code></pre>
 Let’s use the Pearson correlation coefficient formula to find the strength of linear relationship.</p>
 <pre class="r"><code>cov(x,y)/(sd(x)*sd(y))</code></pre>
 <pre><code>## [1] 0.56</code></pre>
-<p>Pearson correlation indicates a positive linear relationship between our sample data. We know that this isn’t true, since we plotted an exponential curve. However, we do know that the variables move in the same direction.
+<p>Pearson correlation indicates a moderately positive linear relationship between our sample data. We know that this isn’t true, since we plotted an exponential curve. However, we do know that the variables move in the same direction.
 <br><br>
 <strong>Spearman’s Rank correlation</strong> takes the Pearson correlation of the rank variables.</p>
 <blockquote>
@@ -250,7 +248,7 @@ Ranking of Variable Y
      cov(rank_x, rank_y)/
        (sd(rank_x)*sd(rank_y)))</code></pre>
 <pre><code>## [1] 1</code></pre>
-<p>Spearman correlation indicates a <strong>perfect monotonically increasing relationship.</strong> That is, one variable either increases or stays the same as another variable increases. Spearman correlation also returns values ranging from -1 to 1. A perfect monotonically decreasing relationship is expressed as a Spearman correlation of -1.</p>
+<p>Spearman’s correlation indicates a <strong>perfect monotonically increasing relationship.</strong> That is, one variable either increases or stays the same as another variable increases. Spearman’s correlation also returns values ranging from -1 to 1. A perfect monotonically decreasing relationship is expressed as a Spearman’s correlation of -1.</p>
 <p>Spearman measures the correlations of ranked-ordered variables. The formula is exactly that of Pearson correlation, except with <strong>ranked variables</strong>. Since we’re only looking at the ranked variables, we can now find monotonic correlation of ordinal data (categorical data with a set order). Spearman’s Correlation allows us to find association between ordinal and continuous variables, rather than only continuous variables.</p>
 </div>
 <div id="kendalls-tau" class="section level3">
@@ -258,13 +256,13 @@ Ranking of Variable Y
 <p>Let’s recap what we know so far:</p>
 <ul>
 <li><p>Pearson Correlation is the covariance of two random variables, scaled by its respective standard deviations. It measures the average linear strength between two variables with respect to their means.</p></li>
-<li><p>Spearman Correlation is a special case of the Pearson correlation, where data is ranked from largest to smallest. We apply Pearson correlation to the rank values of the variables rather than the variables itself. This allows us to measure for nonlinear monotonic relationships.</p></li>
+<li><p>Spearman’s Correlation is a special case of the Pearson correlation, where data is ranked from largest to smallest. We apply Pearson correlation to the rank values of the variables rather than the variables itself. This allows us to measure for nonlinear monotonic relationships.</p></li>
 </ul>
 <p>The Kendall Rank Correlation, or Kendall’s tau, is another rank correlation measure that can be used with continuous and ordinal variables. <strong>However</strong>, unlike Spearman’s correlation, Kendall’s Tau is <em>not</em> an extension of Pearson correlation.
 <br><br>
 Instead of measuring correlation by a scaled covariance of the variables, Kendall’s tau finds association based on the <strong>concordance</strong> of pairs.</p>
-<div id="what-does-concordance-even-mean" class="section level4">
-<h4>What does concordance even mean?</h4>
+<div id="what-does-concordance-mean" class="section level4">
+<h4>What does concordance mean?</h4>
 <p>A <strong>Concordant pair</strong> is the number of observations that are below a rank. A <strong>Discordant pair</strong> is the number of observations that are above a rank.</p>
 <p>The closer the coefficient is to 1, the closer the relationship is to perfect <strong>concordance</strong>. That is, if the ordered pairs are similar in ranking, the coefficient will be close to 1. If the pairs are inversely related, then the coefficient will be close to -1.</p>
 <p>Let’s look at the formula for tau:</p>
@@ -411,7 +409,6 @@ This is quite a departure from Pearson and Spearman correlation.</p>
 <li><p>Different correlations can show different aspects of your data, and the types of variables in your data will determine which correlations to use.</p></li>
 </ul>
 <p>Unfortunately, this was another long article - I promise I will be more concise in the future.</p>
-<p>One last thing! Just reiterating a point Dr. Velikovic made in their article. Correlation can only provide information on the tested variables. Variables at the individual level cannot speak for variables at the aggregate level.</p>
 <div id="references" class="section level4">
 <h4>References</h4>
 <hr />

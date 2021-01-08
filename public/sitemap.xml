@@ -3,21 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/</loc>
-    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/</loc>
-    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/post/2020-08-05-what-s-correlation-why-do-people-use-it/</loc>
-    <lastmod>2020-08-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/about/</loc>
     <lastmod>2020-07-28T00:00:00+00:00</lastmod>
   </url>
@@ -43,7 +28,17 @@
   </url>
   
   <url>
+    <loc>/</loc>
+    <lastmod>2020-07-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/post/2020-07-24-masks-and-covid-in-orange-county-vs-san-diego/</loc>
+    <lastmod>2020-07-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
     <lastmod>2020-07-24T00:00:00+00:00</lastmod>
   </url>
   
