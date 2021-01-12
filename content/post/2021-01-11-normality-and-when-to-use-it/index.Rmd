@@ -1,0 +1,22 @@
+---
+title: Normality and when to use it
+author: ~
+date: '2021-01-11'
+slug: normality-and-when-to-use-it
+categories: []
+tags: []
+---
+
+The normal distribution is the most widely used distribution 
+<!--more-->
+What makes the Normal Distribution so special? This is a decent question to ask. I remember learning about the Normal distribution and thinking, why am I using this so much? 
+
+To begin with, why do scientists model systems in the first place? There are many immediate uses to modelling - you can model the impact of some business decision and see its predicted impact on your bottom line. However, modelling can do so much more. 
+
+Models are created by simplifying some natural process for the language of mathematics. The less simplification involved, the closer the model is to the actual process and the less assumptions necessary for the model to accurately predict changes in the natural process. Nature is complex, and many models require a lot of different variables that can be difficult to take into account. Sometimes, models are deliberately simplified to explain one mechanism of the natural process. These are called Toy Models, and instead of providing the prediction, they clarify the logic behind the mechanism. All models give scientists a framework to ask new questions and make novel discoveries.
+
+Having said this, modelling has its caveats. In “More is Different”, Dr. Phillip Anderson explains that a “reductionist” hypothesis does not imply a “constructionist” one. In fact, many models with simple rules can create complex patterns in the macro. Individual processes cannot speak for the aggregate of those processes.
+
+Understanding the logic of a process is useful, but what if we wanted to understand the collective response of these processes? Oftentimes, scientists are tasked with understanding large-scale systems, where many processes aggregate and make a collective outcome. We can’t use our model of an individual process and apply it to its aggregate; In short, we need a new tool to understand large-scale outcomes. 
+
+Here’s where the Normal Distribution becomes relevant. The Central Limit Theorem lets us define the Normal Distribution as a simple model of aggregation. The CLT states that, if we added many (specifically 30 or more) independent events, the distribution of these events will follow a bell-shape curve. A bell-shape curve provides scientists with a structure to estimate parameters of the statistic, meaning that we can easily find averages and probabilities of outcomes. These distributions are characterized as “approximately normal” distributions. 
